@@ -2,22 +2,26 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white;
+    @apply bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white;
   }
 }
 
-/* Custom smooth scrollbar */
+.font-display {
+  font-family: 'Calistoga', Georgia, serif;
+}
+
+/* Custom smooth scrollbar for light theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
 }

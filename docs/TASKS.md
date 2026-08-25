@@ -24,54 +24,54 @@ incrementally — one section at a time, not the whole file at once.
 - [x] Test: full register → login → access protected route flow
 
 ## Phase 2: Client Management
-- [ ] Backend: Client CRUD endpoints (GET list, GET one, POST, PUT, DELETE)
-- [ ] Backend: Validation (name/email required)
-- [ ] Backend: Prevent delete if client has invoices (409 response)
-- [ ] Frontend: Clients list page with search
-- [ ] Frontend: Add/Edit client modal form
-- [ ] Frontend: Delete client with confirmation
-- [ ] Test: full client CRUD flow via UI
+- [x] Backend: Client CRUD endpoints (GET list, GET one, POST, PUT, DELETE)
+- [x] Backend: Validation (name/email required)
+- [x] Backend: Prevent delete if client has invoices (409 response)
+- [x] Frontend: Clients list page with search
+- [x] Frontend: Add/Edit client modal form
+- [x] Frontend: Delete client with confirmation
+- [x] Test: full client CRUD flow via UI
 
 ## Phase 3: Invoice Creation
-- [ ] Backend: Invoice CRUD endpoints (draft-only edit/delete rule)
-- [ ] Backend: Auto-generate invoiceNumber per user (INV-0001, INV-0002...)
-- [ ] Backend: Auto-calculate subtotal, tax, total from line items
-- [ ] Backend: Status update endpoint (PATCH /status)
-- [ ] Frontend: Invoice list page with status filter
-- [ ] Frontend: Invoice creation form (dynamic line items add/remove)
-- [ ] Frontend: Invoice detail/view page
-- [ ] Test: create invoice with multiple line items, verify totals calculate correctly
+- [x] Backend: Invoice CRUD endpoints (draft-only edit/delete rule)
+- [x] Backend: Auto-generate invoiceNumber per user (INV-0001, INV-0002...)
+- [x] Backend: Auto-calculate subtotal, tax, total from line items
+- [x] Backend: Status update endpoint (PATCH /status)
+- [x] Frontend: Invoice list page with status filter
+- [x] Frontend: Invoice creation form (dynamic line items add/remove)
+- [x] Frontend: Invoice detail/view page
+- [x] Test: create invoice with multiple line items, verify totals calculate correctly
 
 ## Phase 4: PDF Generation & Email
-- [ ] Backend: Build HTML invoice template (templates/invoice.html)
-- [ ] Backend: Puppeteer setup to render HTML → PDF
-- [ ] Backend: GET /invoices/:id/pdf — stream PDF as file response
-- [ ] Backend: Nodemailer setup, SMTP config
-- [ ] Backend: POST /invoices/:id/send — generate PDF, email to client, update status to "sent"
-- [ ] Frontend: "Download PDF" button on invoice detail page
-- [ ] Frontend: "Send Invoice" button with loading/success state
-- [ ] Test: download PDF looks correct, email arrives with attachment
+- [x] Backend: Build HTML invoice template (templates/invoice.html)
+- [x] Backend: Puppeteer setup to render HTML → PDF
+- [x] Backend: GET /invoices/:id/pdf — stream PDF as file response
+- [x] Backend: Nodemailer setup, SMTP config
+- [x] Backend: POST /invoices/:id/send — generate PDF, email to client, update status to "sent"
+- [x] Frontend: "Download PDF" button on invoice detail page
+- [x] Frontend: "Send Invoice" button with loading/success state
+- [x] Test: download PDF looks correct, email arrives with attachment
 
 ## Phase 5: Expense Tracking
-- [ ] Backend: Expense CRUD endpoints
-- [ ] Backend: Filter by category/date range
-- [ ] Frontend: Expenses list page with filters
-- [ ] Frontend: Add/Edit expense modal
-- [ ] Test: full expense CRUD flow
+- [x] Backend: Expense CRUD endpoints
+- [x] Backend: Filter by category/date range
+- [x] Frontend: Expenses list page with filters
+- [x] Frontend: Add/Edit expense modal
+- [x] Test: full expense CRUD flow
 
 ## Phase 6: Dashboard
-- [ ] Backend: GET /dashboard/summary (totals aggregation)
-- [ ] Backend: GET /dashboard/revenue-chart (monthly grouped data)
-- [ ] Frontend: Dashboard page layout
-- [ ] Frontend: Summary cards (outstanding, paid, expenses, net profit)
-- [ ] Frontend: Revenue vs expense chart (Recharts)
-- [ ] Test: dashboard numbers match manually calculated totals
+- [x] Backend: GET /dashboard/summary (totals aggregation)
+- [x] Backend: GET /dashboard/revenue-chart (monthly grouped data)
+- [x] Frontend: Dashboard page layout
+- [x] Frontend: Summary cards (outstanding, paid, expenses, net profit)
+- [x] Frontend: Revenue vs expense chart (Recharts)
+- [x] Test: dashboard numbers match manually calculated totals
 
 ## Phase 7: Polish & Deploy
-- [ ] Error handling middleware (consistent error response format)
-- [ ] Loading states / empty states across all pages
-- [ ] Responsive design pass (mobile/tablet check)
-- [ ] Seed demo data script (for portfolio demo account)
+- [x] Error handling middleware (consistent error response format)
+- [x] Loading states / empty states across all pages
+- [x] Responsive design pass (mobile/tablet check)
+- [x] Seed demo data script (for portfolio demo account)
 - [ ] Deploy backend to Render
 - [ ] Deploy database (Render MySQL or Railway)
 - [ ] Deploy frontend to Vercel

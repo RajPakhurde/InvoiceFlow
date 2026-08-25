@@ -2,20 +2,32 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { config } from './config/env.js';
+import { prisma } from './config/db.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import clientsRoutes from './modules/clients/clients.routes.js';
+import invoicesRoutes from './modules/invoices/invoices.routes.js';
+import expensesRoutes from './modules/expenses/expenses.routes.js';
+import dashboardRoutes from './modules/dashboard/dashboard.routes.js';
+import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
-app.use(cors({
-  origin: config.frontendUrl,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: config.frontendUrl,
+    credentials: true,
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/clients', clientsRoutes);
+app.use('/api/invoices', invoicesRoutes);
+app.use('/api/expenses', expensesRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health Check Route
 app.get('/api/health', async (req, res, next) => {
@@ -27,33 +39,14 @@ app.get('/api/health', async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      db: 'disconnected',
-      error: error.message,
-    });
+    next(error);
   }
 });
 
 // 404 Route Handler
-app.use((req, res) => {
-  res.status(404).json({
-    error: {
-      message: `Route ${req.originalUrl} not found`,
-      code: 'NOT_FOUND',
-    },
-  });
-});
+app.use(notFoundHandler);
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled Server Error:', err);
-  res.status(err.status || 500).json({
-    error: {
-      message: err.message || 'Internal Server Error',
-      code: err.code || 'INTERNAL_SERVER_ERROR',
-    },
-  });
-});
+// Global Error Handler Middleware
+app.use(errorHandler);
 
 export default app;

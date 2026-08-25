@@ -1,17 +1,33 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import LoginPage from '../features/auth/LoginPage';
 import RegisterPage from '../features/auth/RegisterPage';
 import ProtectedRoute from '../components/ProtectedRoute';
+import Navbar from '../components/Navbar';
+import DashboardPage from '../features/dashboard/DashboardPage';
+import ClientsListPage from '../features/clients/ClientsListPage';
+import InvoicesListPage from '../features/invoices/InvoicesListPage';
+import InvoiceFormPage from '../features/invoices/InvoiceFormPage';
+import InvoiceDetailPage from '../features/invoices/InvoiceDetailPage';
+import ExpensesListPage from '../features/expenses/ExpensesListPage';
+
+const ProtectedLayout = () => (
+  <div className="min-h-screen bg-slate-50 flex flex-col">
+    <Navbar />
+    <main className="flex-1">
+      <Outlet />
+    </main>
+  </div>
+);
 
 const ProtectedPlaceholder = ({ title }) => (
-  <div className="min-h-screen flex items-center justify-center bg-slate-950 p-6">
-    <div className="max-w-md w-full p-8 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl shadow-2xl text-center">
-      <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mx-auto mb-4 font-bold text-xl">
+  <div className="flex-1 flex items-center justify-center p-6 my-auto">
+    <div className="max-w-md w-full p-8 rounded-2xl bg-white border border-slate-200 shadow-xl text-center">
+      <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto mb-4 font-bold text-xl">
         IF
       </div>
-      <h1 className="text-2xl font-bold text-white mb-2">{title}</h1>
-      <p className="text-slate-400 text-sm">
+      <h1 className="text-2xl font-bold text-slate-900 mb-2">{title}</h1>
+      <p className="text-slate-500 text-sm">
         Protected Route Verified. Module features coming in upcoming phases.
       </p>
     </div>
@@ -27,10 +43,19 @@ export default function AppRoutes() {
       
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<ProtectedPlaceholder title="Dashboard" />} />
-        <Route path="/clients" element={<ProtectedPlaceholder title="Clients Management" />} />
-        <Route path="/invoices" element={<ProtectedPlaceholder title="Invoices" />} />
-        <Route path="/expenses" element={<ProtectedPlaceholder title="Expense Tracker" />} />
+        <Route element={<ProtectedLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/clients" element={<ClientsListPage />} />
+          
+          {/* Invoice Routes */}
+          <Route path="/invoices" element={<InvoicesListPage />} />
+          <Route path="/invoices/new" element={<InvoiceFormPage />} />
+          <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
+          <Route path="/invoices/:id/edit" element={<InvoiceFormPage />} />
+
+          {/* Expense Routes */}
+          <Route path="/expenses" element={<ExpensesListPage />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<ProtectedPlaceholder title="404 - Page Not Found" />} />

@@ -34,16 +34,16 @@ payments, and expenses — with automated PDF generation and payment tracking.
 
 ## 5. Core Features (MVP — Phase 1)
 - [x] User authentication (JWT-based signup/login)
-- [ ] Multi-tenant data isolation (each user only sees their own data)
-- [ ] Client management (CRUD)
-- [ ] Invoice creation with line items, auto-calculated totals
-- [ ] Invoice PDF generation and download
-- [ ] Invoice email delivery to client
-- [ ] Invoice status tracking (Draft → Sent → Paid → Overdue)
-- [ ] Manual "mark as paid" action
-- [ ] Expense logging (CRUD) with category and date
-- [ ] Dashboard with revenue vs. expense chart (monthly)
-- [ ] Dashboard summary cards (total outstanding, total paid, net profit)
+- [x] Multi-tenant data isolation (each user only sees their own data)
+- [x] Client management (CRUD)
+- [x] Invoice creation with line items, auto-calculated totals
+- [x] Invoice PDF generation and download
+- [x] Invoice email delivery to client
+- [x] Invoice status tracking (Draft → Sent → Paid → Overdue)
+- [x] Manual "mark as paid" action
+- [x] Expense logging (CRUD) with category and date
+- [x] Dashboard with revenue vs. expense chart (monthly)
+- [x] Dashboard summary cards (total outstanding, total paid, net profit)
 
 ## 6. Phase 2 Features (Out of Scope for MVP)
 - Razorpay/Stripe "Pay Now" link with webhook-based auto status update

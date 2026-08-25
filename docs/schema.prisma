@@ -1,0 +1,120 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------
+// ENUMS
+// ------------------------------
+
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  overdue
+}
+
+// ------------------------------
+// MODELS
+// ------------------------------
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  companyName  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clients  Client[]
+  invoices Invoice[]
+  expenses Expense[]
+
+  @@map("users")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  email     String
+  company   String?
+  address   String?
+  gstin     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+
+  @@index([userId])
+  @@map("clients")
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  userId        String
+  clientId      String
+  invoiceNumber String
+  status        InvoiceStatus @default(draft)
+  issueDate     DateTime
+  dueDate       DateTime
+  taxPercent    Float         @default(0)
+  subtotal      Float
+  taxAmount     Float
+  total         Float
+  notes         String?
+  sentAt        DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client Client        @relation(fields: [clientId], references: [id])
+  items  InvoiceItem[]
+
+  @@unique([userId, invoiceNumber])
+  @@index([userId])
+  @@index([clientId])
+  @@index([status])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String @id @default(uuid())
+  invoiceId   String
+  description String
+  quantity    Float
+  rate        Float
+  amount      Float // quantity * rate, computed on save
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model Expense {
+  id        String   @id @default(uuid())
+  userId    String
+  category  String
+  amount    Float
+  date      DateTime
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@map("expenses")
+}

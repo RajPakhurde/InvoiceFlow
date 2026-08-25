@@ -8,9 +8,18 @@ import {
 
 export const fetchExpenses = createAsyncThunk(
   'expenses/fetchExpenses',
-  async (params, { rejectWithValue }) => {
+  async (params, { rejectWithValue, getState }) => {
     try {
-      const data = await fetchExpensesApi(params);
+      const { categoryFilter, startDateFilter, endDateFilter, page, limit } = getState().expenses;
+      const mergedParams = {
+        category: categoryFilter,
+        startDate: startDateFilter,
+        endDate: endDateFilter,
+        page,
+        limit,
+        ...params,
+      };
+      const data = await fetchExpensesApi(mergedParams);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to fetch expenses');
@@ -20,11 +29,10 @@ export const fetchExpenses = createAsyncThunk(
 
 export const createExpense = createAsyncThunk(
   'expenses/createExpense',
-  async (expenseData, { rejectWithValue, dispatch, getState }) => {
+  async (expenseData, { rejectWithValue, dispatch }) => {
     try {
       const created = await createExpenseApi(expenseData);
-      const { categoryFilter, startDateFilter, endDateFilter } = getState().expenses;
-      dispatch(fetchExpenses({ category: categoryFilter, startDate: startDateFilter, endDate: endDateFilter }));
+      dispatch(fetchExpenses());
       return created;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to create expense');
@@ -34,11 +42,10 @@ export const createExpense = createAsyncThunk(
 
 export const updateExpense = createAsyncThunk(
   'expenses/updateExpense',
-  async ({ id, data }, { rejectWithValue, dispatch, getState }) => {
+  async ({ id, data }, { rejectWithValue, dispatch }) => {
     try {
       const updated = await updateExpenseApi({ id, data });
-      const { categoryFilter, startDateFilter, endDateFilter } = getState().expenses;
-      dispatch(fetchExpenses({ category: categoryFilter, startDate: startDateFilter, endDate: endDateFilter }));
+      dispatch(fetchExpenses());
       return updated;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to update expense');
@@ -48,11 +55,10 @@ export const updateExpense = createAsyncThunk(
 
 export const deleteExpense = createAsyncThunk(
   'expenses/deleteExpense',
-  async (id, { rejectWithValue, dispatch, getState }) => {
+  async (id, { rejectWithValue, dispatch }) => {
     try {
       await deleteExpenseApi(id);
-      const { categoryFilter, startDateFilter, endDateFilter } = getState().expenses;
-      dispatch(fetchExpenses({ category: categoryFilter, startDate: startDateFilter, endDate: endDateFilter }));
+      dispatch(fetchExpenses());
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to delete expense');
@@ -64,6 +70,9 @@ const expensesSlice = createSlice({
   name: 'expenses',
   initialState: {
     expenses: [],
+    total: 0,
+    page: 1,
+    limit: 10,
     categoryFilter: 'all',
     startDateFilter: '',
     endDateFilter: '',
@@ -73,17 +82,28 @@ const expensesSlice = createSlice({
   reducers: {
     setCategoryFilter: (state, action) => {
       state.categoryFilter = action.payload;
+      state.page = 1;
     },
     setStartDateFilter: (state, action) => {
       state.startDateFilter = action.payload;
+      state.page = 1;
     },
     setEndDateFilter: (state, action) => {
       state.endDateFilter = action.payload;
+      state.page = 1;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setLimit: (state, action) => {
+      state.limit = action.payload;
+      state.page = 1;
     },
     resetFilters: (state) => {
       state.categoryFilter = 'all';
       state.startDateFilter = '';
       state.endDateFilter = '';
+      state.page = 1;
     },
     clearExpensesError: (state) => {
       state.error = null;
@@ -97,7 +117,15 @@ const expensesSlice = createSlice({
       })
       .addCase(fetchExpenses.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.expenses = action.payload;
+        if (Array.isArray(action.payload)) {
+          state.expenses = action.payload;
+          state.total = action.payload.length;
+        } else {
+          state.expenses = action.payload.data || [];
+          state.total = action.payload.total || 0;
+          state.page = action.payload.page || 1;
+          state.limit = action.payload.limit || 10;
+        }
       })
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.status = 'failed';
@@ -110,6 +138,8 @@ export const {
   setCategoryFilter,
   setStartDateFilter,
   setEndDateFilter,
+  setPage,
+  setLimit,
   resetFilters,
   clearExpensesError,
 } = expensesSlice.actions;

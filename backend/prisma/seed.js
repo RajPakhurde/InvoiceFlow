@@ -41,7 +41,7 @@ async function main() {
 
   console.log(`✓ Demo User initialized: ${user.email} (${user.id})`);
 
-  // 2. Create 4 Realistic Clients
+  // 2. Create 8 Realistic Clients
   const clientsData = [
     {
       name: 'Pixel & Byte Labs',
@@ -71,6 +71,34 @@ async function main() {
       address: '742 Michigan Avenue\nChicago, IL 60601',
       gstin: '19AABCV7890R1Z2',
     },
+    {
+      name: 'Vanguard Innovations',
+      email: 'invoices@vanguardinnovations.com',
+      company: 'Vanguard Innovations Inc.',
+      address: '500 Financial Way, Floor 14\nNew York, NY 10005',
+      gstin: '36AABCV1234K1Z5',
+    },
+    {
+      name: 'Apex Cloud Solutions',
+      email: 'billing@apexcloud.io',
+      company: 'Apex Cloud Systems LLC',
+      address: '1200 17th Street, Suite 800\nDenver, CO 80202',
+      gstin: '08AAAPA9876C1Z1',
+    },
+    {
+      name: 'Starlight Media Agency',
+      email: 'finance@starlightmedia.com',
+      company: 'Starlight Media Group',
+      address: '9000 Sunset Blvd, Suite 300\nLos Angeles, CA 90069',
+      gstin: '06BCCPS4321D1Z8',
+    },
+    {
+      name: 'Nexus Growth Partners',
+      email: 'accounts@nexusgrowth.co',
+      company: 'Nexus Growth Ventures',
+      address: '200 S Biscayne Blvd, Suite 1500\nMiami, FL 33131',
+      gstin: '12AAACN6543M1Z9',
+    },
   ];
 
   const createdClients = [];
@@ -85,27 +113,31 @@ async function main() {
     console.log(`  ✓ Client created: ${client.name}`);
   }
 
-  const [pixelByte, summit, horizon, aura] = createdClients;
+  const [pixelByte, summit, horizon, aura, vanguard, apexCloud, starlight, nexus] = createdClients;
 
-  // 3. Create 10 Realistic Invoices across the last 12 months
   const now = new Date();
   const getMonthDate = (monthsAgo, day = 15) => {
     const d = new Date(now.getFullYear(), now.getMonth() - monthsAgo, day);
     return d;
   };
+  const getDaysAgoDate = (daysAgo) => {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysAgo);
+    return d;
+  };
 
+  // 3. Create 18 Realistic Invoices spanning 2025-2026 across all 4 statuses
   const invoicesData = [
-    // Paid Invoices (Historical Revenue)
+    // Paid Invoices (Historical Revenue 2025 & 2026)
     {
       client: pixelByte,
       invoiceNumber: 'INV-0001',
       status: 'paid',
-      issueDate: getMonthDate(11, 1),
-      dueDate: getMonthDate(11, 15),
-      paidAt: getMonthDate(11, 10),
-      sentAt: getMonthDate(11, 2),
+      issueDate: getMonthDate(14, 1),
+      dueDate: getMonthDate(14, 15),
+      paidAt: getMonthDate(14, 10),
+      sentAt: getMonthDate(14, 2),
       taxPercent: 10,
-      notes: 'Payment received with thanks. Sprint 1 & 2 UI redesign completed.',
+      notes: 'Payment received with thanks. UX Audit & Design System.',
       items: [
         { description: 'UX Audit & Wireframing', quantity: 1, rate: 2500 },
         { description: 'Design System & Tailwind Component Library', quantity: 1, rate: 4500 },
@@ -115,10 +147,10 @@ async function main() {
       client: summit,
       invoiceNumber: 'INV-0002',
       status: 'paid',
-      issueDate: getMonthDate(9, 5),
-      dueDate: getMonthDate(9, 20),
-      paidAt: getMonthDate(9, 18),
-      sentAt: getMonthDate(9, 6),
+      issueDate: getMonthDate(12, 5),
+      dueDate: getMonthDate(12, 20),
+      paidAt: getMonthDate(12, 18),
+      sentAt: getMonthDate(12, 6),
       taxPercent: 10,
       notes: 'E-commerce platform migration milestone 1.',
       items: [
@@ -130,10 +162,10 @@ async function main() {
       client: horizon,
       invoiceNumber: 'INV-0003',
       status: 'paid',
-      issueDate: getMonthDate(7, 10),
-      dueDate: getMonthDate(7, 25),
-      paidAt: getMonthDate(7, 22),
-      sentAt: getMonthDate(7, 11),
+      issueDate: getMonthDate(10, 10),
+      dueDate: getMonthDate(10, 25),
+      paidAt: getMonthDate(10, 22),
+      sentAt: getMonthDate(10, 11),
       taxPercent: 10,
       notes: 'Cloud architecture & microservices consultation.',
       items: [
@@ -145,10 +177,10 @@ async function main() {
       client: aura,
       invoiceNumber: 'INV-0004',
       status: 'paid',
-      issueDate: getMonthDate(5, 1),
-      dueDate: getMonthDate(5, 15),
-      paidAt: getMonthDate(5, 12),
-      sentAt: getMonthDate(5, 2),
+      issueDate: getMonthDate(8, 1),
+      dueDate: getMonthDate(8, 15),
+      paidAt: getMonthDate(8, 12),
+      sentAt: getMonthDate(8, 2),
       taxPercent: 10,
       notes: 'Brand identity & web app MVP build.',
       items: [
@@ -157,13 +189,73 @@ async function main() {
       ],
     },
     {
-      client: pixelByte,
+      client: vanguard,
       invoiceNumber: 'INV-0005',
       status: 'paid',
-      issueDate: getMonthDate(3, 10),
-      dueDate: getMonthDate(3, 25),
-      paidAt: getMonthDate(3, 20),
-      sentAt: getMonthDate(3, 11),
+      issueDate: getMonthDate(6, 10),
+      dueDate: getMonthDate(6, 25),
+      paidAt: getMonthDate(6, 20),
+      sentAt: getMonthDate(6, 11),
+      taxPercent: 10,
+      notes: 'Fintech portal analytics dashboard build.',
+      items: [
+        { description: 'Interactive Financial Charting Components', quantity: 1, rate: 4800 },
+        { description: 'Security Compliance Audit & Penetration Fixes', quantity: 1, rate: 2200 },
+      ],
+    },
+    {
+      client: apexCloud,
+      invoiceNumber: 'INV-0006',
+      status: 'paid',
+      issueDate: getMonthDate(5, 5),
+      dueDate: getMonthDate(5, 20),
+      paidAt: getMonthDate(5, 15),
+      sentAt: getMonthDate(5, 6),
+      taxPercent: 10,
+      notes: 'DevOps & Docker containerization.',
+      items: [
+        { description: 'Kubernetes Cluster Provisioning', quantity: 1, rate: 5200 },
+        { description: 'Prometheus & Grafana Monitoring Setup', quantity: 1, rate: 1800 },
+      ],
+    },
+    {
+      client: starlight,
+      invoiceNumber: 'INV-0007',
+      status: 'paid',
+      issueDate: getMonthDate(4, 1),
+      dueDate: getMonthDate(4, 15),
+      paidAt: getMonthDate(4, 10),
+      sentAt: getMonthDate(4, 2),
+      taxPercent: 10,
+      notes: 'Media streaming web application.',
+      items: [
+        { description: 'HLS Video Player Customization', quantity: 1, rate: 3600 },
+        { description: 'Subscription Billing Portal', quantity: 1, rate: 2900 },
+      ],
+    },
+    {
+      client: nexus,
+      invoiceNumber: 'INV-0008',
+      status: 'paid',
+      issueDate: getMonthDate(3, 12),
+      dueDate: getMonthDate(3, 27),
+      paidAt: getMonthDate(3, 24),
+      sentAt: getMonthDate(3, 13),
+      taxPercent: 10,
+      notes: 'Venture portfolio site & CMS integration.',
+      items: [
+        { description: 'Next.js 14 SSG Website Development', quantity: 1, rate: 6500 },
+        { description: 'Sanity.io Headless CMS Configuration', quantity: 1, rate: 2100 },
+      ],
+    },
+    {
+      client: pixelByte,
+      invoiceNumber: 'INV-0009',
+      status: 'paid',
+      issueDate: getMonthDate(2, 5),
+      dueDate: getMonthDate(2, 20),
+      paidAt: getMonthDate(2, 18),
+      sentAt: getMonthDate(2, 6),
       taxPercent: 10,
       notes: 'Mobile app webview integration.',
       items: [
@@ -173,12 +265,12 @@ async function main() {
     },
     {
       client: summit,
-      invoiceNumber: 'INV-0006',
+      invoiceNumber: 'INV-0010',
       status: 'paid',
-      issueDate: getMonthDate(1, 5),
-      dueDate: getMonthDate(1, 20),
-      paidAt: getMonthDate(1, 15),
-      sentAt: getMonthDate(1, 6),
+      issueDate: getMonthDate(1, 10),
+      dueDate: getMonthDate(1, 25),
+      paidAt: getMonthDate(1, 22),
+      sentAt: getMonthDate(1, 11),
       taxPercent: 10,
       notes: 'Quarterly optimization & maintenance retainer.',
       items: [
@@ -186,28 +278,56 @@ async function main() {
         { description: 'Security Hardening & Dependency Audits', quantity: 1, rate: 1500 },
       ],
     },
+    {
+      client: vanguard,
+      invoiceNumber: 'INV-0011',
+      status: 'paid',
+      issueDate: getDaysAgoDate(12),
+      dueDate: getDaysAgoDate(2),
+      paidAt: getDaysAgoDate(5),
+      sentAt: getDaysAgoDate(11),
+      taxPercent: 10,
+      notes: 'Recent sprint completion - Payment confirmed.',
+      items: [
+        { description: 'Payment Webhook Handler & Automated Reconciliation', quantity: 1, rate: 3800 },
+      ],
+    },
 
-    // Sent / Outstanding Invoices
+    // Sent / Outstanding Invoices (Active Cash Flow)
     {
       client: horizon,
-      invoiceNumber: 'INV-0007',
+      invoiceNumber: 'INV-0012',
       status: 'sent',
-      issueDate: getMonthDate(0, 5),
-      dueDate: getMonthDate(0, 25),
-      sentAt: getMonthDate(0, 6),
+      issueDate: getDaysAgoDate(15),
+      dueDate: getDaysAgoDate(-10),
+      sentAt: getDaysAgoDate(14),
       paidAt: null,
       taxPercent: 10,
-      notes: 'Payment due within 20 days per contract agreement.',
+      notes: 'Payment due within 25 days per contract agreement.',
       items: [
         { description: 'Full Stack Feature Development - Sprint 4', quantity: 40, rate: 125 },
         { description: 'Automated E2E Testing Suite (Playwright)', quantity: 1, rate: 2500 },
       ],
     },
+    {
+      client: apexCloud,
+      invoiceNumber: 'INV-0013',
+      status: 'sent',
+      issueDate: getDaysAgoDate(8),
+      dueDate: getDaysAgoDate(-12),
+      sentAt: getDaysAgoDate(7),
+      paidAt: null,
+      taxPercent: 10,
+      notes: 'Cloud infrastructure expansion phase 2.',
+      items: [
+        { description: 'Multi-region Database Replication Setup', quantity: 1, rate: 4500 },
+      ],
+    },
 
-    // Overdue Invoices
+    // Overdue Invoices (Collection Risk Alerts)
     {
       client: aura,
-      invoiceNumber: 'INV-0008',
+      invoiceNumber: 'INV-0014',
       status: 'overdue',
       issueDate: getMonthDate(2, 1),
       dueDate: getMonthDate(1, 1),
@@ -220,14 +340,42 @@ async function main() {
         { description: 'SEO & Analytics Integration', quantity: 1, rate: 1200 },
       ],
     },
+    {
+      client: starlight,
+      invoiceNumber: 'INV-0015',
+      status: 'overdue',
+      issueDate: getMonthDate(3, 15),
+      dueDate: getMonthDate(2, 15),
+      sentAt: getMonthDate(3, 16),
+      paidAt: null,
+      taxPercent: 10,
+      notes: 'OVERDUE: Second follow-up sent to accounts department.',
+      items: [
+        { description: 'Video Asset CDN CDN Edge Caching Configuration', quantity: 1, rate: 3100 },
+      ],
+    },
 
-    // Draft Invoices
+    // Draft Invoices (Upcoming Work Pipelines)
+    {
+      client: nexus,
+      invoiceNumber: 'INV-0016',
+      status: 'draft',
+      issueDate: getDaysAgoDate(2),
+      dueDate: getDaysAgoDate(-20),
+      sentAt: null,
+      paidAt: null,
+      taxPercent: 10,
+      notes: 'Draft estimate for Q4 mobile app rebuild.',
+      items: [
+        { description: 'Flutter Cross-platform Mobile App Discovery Phase', quantity: 1, rate: 4200 },
+      ],
+    },
     {
       client: pixelByte,
-      invoiceNumber: 'INV-0009',
+      invoiceNumber: 'INV-0017',
       status: 'draft',
-      issueDate: getMonthDate(0, 20),
-      dueDate: getMonthDate(-1, 5),
+      issueDate: getDaysAgoDate(1),
+      dueDate: getDaysAgoDate(-25),
       sentAt: null,
       paidAt: null,
       taxPercent: 10,
@@ -238,16 +386,16 @@ async function main() {
     },
     {
       client: summit,
-      invoiceNumber: 'INV-0010',
+      invoiceNumber: 'INV-0018',
       status: 'draft',
-      issueDate: getMonthDate(0, 22),
-      dueDate: getMonthDate(-1, 10),
+      issueDate: getDaysAgoDate(0),
+      dueDate: getDaysAgoDate(-30),
       sentAt: null,
       paidAt: null,
       taxPercent: 10,
-      notes: 'Draft estimate for payment gateway integration.',
+      notes: 'Draft proposal for payment link integration.',
       items: [
-        { description: 'Stripe & Razorpay Payment Integration', quantity: 1, rate: 4200 },
+        { description: 'Stripe & Razorpay Payment Integration', quantity: 1, rate: 4800 },
       ],
     },
   ];
@@ -288,22 +436,30 @@ async function main() {
     console.log(`  ✓ Invoice created: ${inv.invoiceNumber} (${inv.status}) - $${total.toFixed(2)}`);
   }
 
-  // 4. Create 14 Realistic Expenses across categories & last 12 months
+  // 4. Create 22 Realistic Expenses across categories & 2025-2026
   const expensesData = [
-    { category: 'Software', amount: 299, date: getMonthDate(11, 2), note: 'GitHub Enterprise & Vercel Pro' },
-    { category: 'Subscriptions', amount: 49, date: getMonthDate(11, 15), note: 'ChatGPT Plus & Figma Pro' },
-    { category: 'Equipment', amount: 1499, date: getMonthDate(10, 5), note: 'Apple MacBook Pro M3 Dock & Accessories' },
-    { category: 'Software', amount: 299, date: getMonthDate(9, 2), note: 'GitHub Enterprise & Vercel Pro' },
-    { category: 'Travel', amount: 350, date: getMonthDate(9, 14), note: 'Flight to Austin Tech Summit' },
+    { category: 'Software', amount: 299, date: getMonthDate(14, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Subscriptions', amount: 49, date: getMonthDate(14, 15), note: 'ChatGPT Plus & Figma Pro' },
+    { category: 'Equipment', amount: 1499, date: getMonthDate(13, 5), note: 'Apple MacBook Pro M3 Dock & Accessories' },
+    { category: 'Software', amount: 299, date: getMonthDate(12, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Travel', amount: 450, date: getMonthDate(12, 14), note: 'Flight to Austin Tech Summit' },
+    { category: 'Software', amount: 299, date: getMonthDate(10, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Marketing', amount: 650, date: getMonthDate(10, 20), note: 'Google Ads & LinkedIn Sponsored Posts' },
+    { category: 'Subscriptions', amount: 49, date: getMonthDate(9, 15), note: 'ChatGPT Plus & Figma Pro' },
+    { category: 'Office', amount: 420, date: getMonthDate(8, 10), note: 'Ergonomic Chair & Standing Desk Converter' },
     { category: 'Software', amount: 299, date: getMonthDate(7, 2), note: 'GitHub Enterprise & Vercel Pro' },
-    { category: 'Marketing', amount: 650, date: getMonthDate(7, 20), note: 'Google Ads & LinkedIn Sponsored Posts' },
-    { category: 'Subscriptions', amount: 49, date: getMonthDate(6, 15), note: 'ChatGPT Plus & Figma Pro' },
-    { category: 'Office', amount: 420, date: getMonthDate(5, 10), note: 'Ergonomic Chair & Standing Desk Converter' },
-    { category: 'Software', amount: 299, date: getMonthDate(4, 2), note: 'GitHub Enterprise & Vercel Pro' },
-    { category: 'Travel', amount: 180, date: getMonthDate(3, 12), note: 'Client Lunch & Rideshare Reimbursements' },
+    { category: 'Travel', amount: 280, date: getMonthDate(6, 12), note: 'Client Dinner & Rideshare Reimbursements' },
+    { category: 'Software', amount: 299, date: getMonthDate(5, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Marketing', amount: 850, date: getMonthDate(4, 10), note: 'Portfolio Site Redesign & SEO Campaign' },
+    { category: 'Equipment', amount: 680, date: getMonthDate(3, 18), note: 'Dell UltraSharp 27" 4K Monitor' },
     { category: 'Software', amount: 299, date: getMonthDate(2, 2), note: 'GitHub Enterprise & Vercel Pro' },
-    { category: 'Marketing', amount: 800, date: getMonthDate(1, 10), note: 'Portfolio Site Redesign & SEO Campaign' },
-    { category: 'Software', amount: 299, date: getMonthDate(0, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Subscriptions', amount: 49, date: getMonthDate(2, 15), note: 'ChatGPT Plus & Figma Pro' },
+    { category: 'Software', amount: 299, date: getMonthDate(1, 2), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Travel', amount: 320, date: getMonthDate(1, 20), note: 'Travel to Client Site in Chicago' },
+    { category: 'Software', amount: 299, date: getDaysAgoDate(24), note: 'GitHub Enterprise & Vercel Pro' },
+    { category: 'Subscriptions', amount: 49, date: getDaysAgoDate(15), note: 'ChatGPT Plus & Figma Pro' },
+    { category: 'Office', amount: 180, date: getDaysAgoDate(8), note: 'High-speed Fiber Broadband & Supplies' },
+    { category: 'Marketing', amount: 450, date: getDaysAgoDate(3), note: 'Digital Portfolio Promotion & Newsletter' },
   ];
 
   console.log('💳 Creating demo expenses...');

@@ -1,22 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchInvoices, setStatusFilter, setPage } from './invoicesSlice';
+import { FileText, Plus, ChevronLeft, ChevronRight, MoreVertical, Eye, Edit } from 'lucide-react';
+import { fetchInvoices, setStatusFilter, setPage, setLimit } from './invoicesSlice';
 
 export default function InvoicesListPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { invoices, total, page, limit, statusFilter, status, error } = useSelector((state) => state.invoices);
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
 
   useEffect(() => {
     dispatch(fetchInvoices({ status: statusFilter, page, limit }));
   }, [dispatch, statusFilter, page, limit]);
+
+  useEffect(() => {
+    const handleClickOutside = () => setActiveDropdownId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const handleStatusFilterChange = (e) => {
     dispatch(setStatusFilter(e.target.value));
   };
 
   const totalPages = Math.ceil(total / limit) || 1;
+  const startItem = total === 0 ? 0 : (page - 1) * limit + 1;
+  const endItem = Math.min(page * limit, total);
 
   const getStatusBadge = (statusName) => {
     switch (statusName) {
@@ -54,32 +64,32 @@ export default function InvoicesListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 sm:p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8 text-slate-900">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
-          <div>
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs uppercase tracking-widest font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-                INVOICES // OVERVIEW
-              </span>
-              <span className="text-xs text-slate-500 font-mono">
-                {total} {total === 1 ? 'invoice' : 'invoices'} found
-              </span>
+        {/* Executive Command Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-100/80 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+              <FileText className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display">
-              Invoices & Billing
-            </h1>
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
+                  Invoices & Billing
+                </h1>
+              </div>
+              <p className="text-slate-500 text-sm">
+                Manage client billing, track invoice payment lifecycles, and generate PDF receipts.
+              </p>
+            </div>
           </div>
 
           <Link
             to="/invoices/new"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all cursor-pointer shrink-0"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <Plus className="w-4 h-4" />
             <span>Create Invoice</span>
           </Link>
         </div>
@@ -93,7 +103,7 @@ export default function InvoicesListPage() {
             <select
               value={statusFilter}
               onChange={handleStatusFilterChange}
-              className="h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+              className="h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="draft">Draft</option>
@@ -123,8 +133,8 @@ export default function InvoicesListPage() {
             </div>
           ) : invoices.length === 0 ? (
             <div className="p-12 text-center text-slate-500 space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-2xl">
-                📄
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-500">
+                <FileText className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">No invoices found</h3>
               <p className="text-sm text-slate-500 max-w-sm mx-auto">
@@ -133,100 +143,152 @@ export default function InvoicesListPage() {
               {statusFilter === 'all' && (
                 <Link
                   to="/invoices/new"
-                  className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs"
+                  className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs cursor-pointer"
                 >
                   + Create Invoice
                 </Link>
               )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-700">
-                <thead className="bg-slate-50/80 border-b border-slate-200 uppercase text-[11px] font-mono tracking-wider text-slate-500 font-semibold">
-                  <tr>
-                    <th className="px-6 py-4">Invoice #</th>
-                    <th className="px-6 py-4">Client</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4">Due Date</th>
-                    <th className="px-6 py-4 text-right">Total Amount</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {invoices.map((inv) => (
-                    <tr
-                      key={inv.id}
-                      onClick={() => navigate(`/invoices/${inv.id}`)}
-                      className="hover:bg-slate-50/80 cursor-pointer transition-colors"
-                    >
-                      <td className="px-6 py-4 font-mono font-bold text-slate-900">
-                        {inv.invoiceNumber}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="font-semibold text-slate-900">{inv.clientName}</div>
-                        {inv.clientCompany && (
-                          <div className="text-xs text-slate-400">{inv.clientCompany}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {getStatusBadge(inv.status)}
-                      </td>
-                      <td className="px-6 py-4 text-xs text-slate-600">
-                        {new Date(inv.dueDate).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </td>
-                      <td className="px-6 py-4 text-right font-semibold text-slate-900">
-                        ${inv.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </td>
-                      <td className="px-6 py-4 text-right space-x-2" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => navigate(`/invoices/${inv.id}`)}
-                          className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors border border-slate-200"
-                        >
-                          View
-                        </button>
-                        {inv.status === 'draft' && (
-                          <button
-                            onClick={() => navigate(`/invoices/${inv.id}/edit`)}
-                            className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-colors border border-blue-200"
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </td>
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-slate-700">
+                  <thead className="bg-slate-50/80 border-b border-slate-200 uppercase text-[11px] font-mono tracking-wider text-slate-500 font-semibold">
+                    <tr>
+                      <th className="px-6 py-4">Invoice #</th>
+                      <th className="px-6 py-4">Client</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4">Due Date</th>
+                      <th className="px-6 py-4 text-right">Total Amount</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {invoices.map((inv) => (
+                      <tr
+                        key={inv.id}
+                        className="hover:bg-slate-50/80 transition-colors"
+                      >
+                        <td className="px-6 py-4 font-mono font-bold text-slate-900">
+                          {inv.invoiceNumber}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="font-semibold text-slate-900">{inv.clientName}</div>
+                          {inv.clientCompany && (
+                            <div className="text-xs text-slate-400">{inv.clientCompany}</div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {getStatusBadge(inv.status)}
+                        </td>
+                        <td className="px-6 py-4 text-xs text-slate-600">
+                          {new Date(inv.dueDate).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </td>
+                        <td className="px-6 py-4 text-right font-semibold text-slate-900 font-mono">
+                          ${inv.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative inline-block text-left">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdownId(activeDropdownId === inv.id ? null : inv.id);
+                              }}
+                              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200 cursor-pointer"
+                              title="Actions"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 bg-slate-50/50 border-t border-slate-200">
-              <span className="text-xs text-slate-500 font-mono">
-                Page {page} of {totalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  disabled={page <= 1}
-                  onClick={() => dispatch(setPage(page - 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled={page >= totalPages}
-                  onClick={() => dispatch(setPage(page + 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40"
-                >
-                  Next
-                </button>
+                            {activeDropdownId === inv.id && (
+                              <div className="absolute right-0 mt-1 w-36 bg-white border border-slate-200/90 rounded-xl shadow-xl p-1 z-30 animate-fade-in text-left">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveDropdownId(null);
+                                    navigate(`/invoices/${inv.id}`);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-slate-500" />
+                                  <span>View Details</span>
+                                </button>
+
+                                {inv.status === 'draft' && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveDropdownId(null);
+                                      navigate(`/invoices/${inv.id}/edit`);
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                  >
+                                    <Edit className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Edit</span>
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
+
+              {/* Standardized Pagination Bar */}
+              <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4 text-xs text-slate-500">
+                  <span>
+                    Showing <strong className="font-semibold text-slate-900">{startItem}</strong> to{' '}
+                    <strong className="font-semibold text-slate-900">{endItem}</strong> of{' '}
+                    <strong className="font-semibold text-slate-900">{total}</strong> entries
+                  </span>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-slate-500">Rows:</span>
+                    <select
+                      value={limit}
+                      onChange={(e) => dispatch(setLimit(Number(e.target.value)))}
+                      className="px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-pointer"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => dispatch(setPage(page - 1))}
+                    disabled={page <= 1}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <span className="text-xs font-semibold font-mono text-slate-700 px-2">
+                    Page {page} of {totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => dispatch(setPage(page + 1))}
+                    disabled={page >= totalPages}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </div>
 

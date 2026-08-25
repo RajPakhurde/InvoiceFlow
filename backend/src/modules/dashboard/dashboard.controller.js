@@ -11,7 +11,8 @@ export const getSummaryHandler = async (req, res, next) => {
 
 export const getRevenueChartHandler = async (req, res, next) => {
   try {
-    const chartData = await dashboardService.getRevenueChart(req.user.id);
+    const period = req.query.period || '12months';
+    const chartData = await dashboardService.getRevenueChart(req.user.id, period);
     res.status(200).json(chartData);
   } catch (error) {
     next(error);

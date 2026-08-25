@@ -1,10 +1,12 @@
 import { axiosClient } from './axiosClient';
 
-export const fetchExpensesApi = async ({ category, startDate, endDate } = {}) => {
+export const fetchExpensesApi = async ({ category, startDate, endDate, page, limit } = {}) => {
   const params = {};
   if (category && category !== 'all') params.category = category;
   if (startDate) params.startDate = startDate;
   if (endDate) params.endDate = endDate;
+  if (page) params.page = page;
+  if (limit) params.limit = limit;
 
   const response = await axiosClient.get('/expenses', { params });
   return response.data;

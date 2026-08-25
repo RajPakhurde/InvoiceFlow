@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { X } from 'lucide-react';
 import { createExpense, updateExpense } from './expensesSlice';
 
 const PRESET_CATEGORIES = [
@@ -114,9 +115,9 @@ export default function ExpenseFormModal({ isOpen, onClose, expenseToEdit }) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm transition-colors"
+            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition-colors"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
 

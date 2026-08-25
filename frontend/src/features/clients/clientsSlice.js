@@ -9,9 +9,9 @@ import {
 
 export const fetchClients = createAsyncThunk(
   'clients/fetchClients',
-  async (search, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const data = await fetchClientsApi(search);
+      const data = await fetchClientsApi(params);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to fetch clients');
@@ -74,6 +74,9 @@ const clientsSlice = createSlice({
   initialState: {
     clients: [],
     selectedClient: null,
+    total: 0,
+    page: 1,
+    limit: 10,
     status: 'idle',
     error: null,
     search: '',
@@ -81,6 +84,14 @@ const clientsSlice = createSlice({
   reducers: {
     setSearch: (state, action) => {
       state.search = action.payload;
+      state.page = 1;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setLimit: (state, action) => {
+      state.limit = action.payload;
+      state.page = 1;
     },
     clearClientsError: (state) => {
       state.error = null;
@@ -95,7 +106,15 @@ const clientsSlice = createSlice({
       })
       .addCase(fetchClients.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.clients = action.payload;
+        if (Array.isArray(action.payload)) {
+          state.clients = action.payload;
+          state.total = action.payload.length;
+        } else {
+          state.clients = action.payload.data || [];
+          state.total = action.payload.total || 0;
+          state.page = action.payload.page || 1;
+          state.limit = action.payload.limit || 10;
+        }
       })
       .addCase(fetchClients.rejected, (state, action) => {
         state.status = 'failed';
@@ -110,6 +129,7 @@ const clientsSlice = createSlice({
       // Create Client
       .addCase(createClient.fulfilled, (state, action) => {
         state.clients.unshift(action.payload);
+        state.total += 1;
       })
 
       // Update Client
@@ -126,9 +146,10 @@ const clientsSlice = createSlice({
       // Delete Client
       .addCase(deleteClient.fulfilled, (state, action) => {
         state.clients = state.clients.filter((c) => c.id !== action.payload);
+        state.total = Math.max(0, state.total - 1);
       });
   },
 });
 
-export const { setSearch, clearClientsError } = clientsSlice.actions;
+export const { setSearch, setPage, setLimit, clearClientsError } = clientsSlice.actions;
 export default clientsSlice.reducer;

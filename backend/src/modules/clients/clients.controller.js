@@ -2,9 +2,9 @@ import * as clientsService from './clients.service.js';
 
 export const getClientsHandler = async (req, res, next) => {
   try {
-    const search = req.query.search || '';
-    const clients = await clientsService.getClients(req.user.id, search);
-    res.status(200).json(clients);
+    const { search, page, limit } = req.query;
+    const result = await clientsService.getClients(req.user.id, { search, page, limit });
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

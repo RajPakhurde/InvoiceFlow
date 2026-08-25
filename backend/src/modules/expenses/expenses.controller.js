@@ -2,13 +2,15 @@ import * as expensesService from './expenses.service.js';
 
 export const getExpensesHandler = async (req, res, next) => {
   try {
-    const { category, startDate, endDate } = req.query;
-    const expenses = await expensesService.getExpenses(req.user.id, {
+    const { category, startDate, endDate, page, limit } = req.query;
+    const result = await expensesService.getExpenses(req.user.id, {
       category,
       startDate,
       endDate,
+      page,
+      limit,
     });
-    res.status(200).json(expenses);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

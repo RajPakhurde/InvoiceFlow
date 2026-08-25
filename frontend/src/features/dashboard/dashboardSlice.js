@@ -15,9 +15,9 @@ export const fetchDashboardSummary = createAsyncThunk(
 
 export const fetchDashboardChart = createAsyncThunk(
   'dashboard/fetchDashboardChart',
-  async (_, { rejectWithValue }) => {
+  async (period = '12months', { rejectWithValue }) => {
     try {
-      const data = await fetchDashboardChartApi();
+      const data = await fetchDashboardChartApi(period);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to fetch revenue chart data');
@@ -30,12 +30,16 @@ const dashboardSlice = createSlice({
   initialState: {
     summary: null,
     chartData: [],
+    chartPeriod: '12months',
     status: 'idle',
     error: null,
   },
   reducers: {
     clearDashboardError: (state) => {
       state.error = null;
+    },
+    setChartPeriod: (state, action) => {
+      state.chartPeriod = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -58,5 +62,5 @@ const dashboardSlice = createSlice({
   },
 });
 
-export const { clearDashboardError } = dashboardSlice.actions;
+export const { clearDashboardError, setChartPeriod } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClients, deleteClient } from './clientsSlice';
+import { User, AlertTriangle, ChevronLeft, ChevronRight, Plus, Search, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { fetchClients, deleteClient, setPage, setLimit, setSearch } from './clientsSlice';
 import ClientFormModal from './ClientFormModal';
 
 export default function ClientsListPage() {
   const dispatch = useDispatch();
-  const { clients, status, error } = useSelector((state) => state.clients);
+  const { clients, total, page, limit, status, error, search } = useSelector((state) => state.clients);
 
-  const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clientToEdit, setClientToEdit] = useState(null);
   
@@ -16,12 +16,21 @@ export default function ClientsListPage() {
   const [deleteError, setDeleteError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Row 3-dots dropdown state
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
+
   useEffect(() => {
-    dispatch(fetchClients(search));
-  }, [dispatch, search]);
+    dispatch(fetchClients({ search, page, limit }));
+  }, [dispatch, search, page, limit]);
+
+  useEffect(() => {
+    const handleClickOutside = () => setActiveDropdownId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
+    dispatch(setSearch(e.target.value));
   };
 
   const handleOpenAddModal = () => {
@@ -42,6 +51,7 @@ export default function ClientsListPage() {
     try {
       await dispatch(deleteClient(clientToDelete.id)).unwrap();
       setClientToDelete(null);
+      dispatch(fetchClients({ search, page, limit }));
     } catch (err) {
       const msg = typeof err === 'object' ? err.message : err;
       setDeleteError(msg || 'Failed to delete client');
@@ -50,42 +60,44 @@ export default function ClientsListPage() {
     }
   };
 
+  const totalPages = Math.ceil(total / limit) || 1;
+  const startItem = total === 0 ? 0 : (page - 1) * limit + 1;
+  const endItem = Math.min(page * limit, total);
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 sm:p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8 text-slate-900">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
-          <div>
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs uppercase tracking-widest font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-                CLIENTS // DIRECTORY
-              </span>
-              <span className="text-xs text-slate-500 font-mono">
-                {clients.length} {clients.length === 1 ? 'client' : 'clients'} total
-              </span>
+        {/* Executive Command Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-100/80 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+              <User className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display">
-              Client Directory
-            </h1>
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
+                  Client Directory
+                </h1>
+              </div>
+              <p className="text-slate-500 text-sm">
+                Manage client profiles, contact details, tax identifiers, and invoicing histories.
+              </p>
+            </div>
           </div>
 
           <button
             onClick={handleOpenAddModal}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all cursor-pointer shrink-0"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <Plus className="w-4 h-4" />
             <span>Add Client</span>
           </button>
         </div>
 
         {/* Search Bar & Filters */}
         <div className="relative">
-          <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={search}
@@ -114,8 +126,8 @@ export default function ClientsListPage() {
             </div>
           ) : clients.length === 0 ? (
             <div className="p-12 text-center text-slate-500 space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-2xl">
-                👤
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-500">
+                <User className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">No clients found</h3>
               <p className="text-sm text-slate-500 max-w-sm mx-auto">
@@ -124,72 +136,148 @@ export default function ClientsListPage() {
               {!search && (
                 <button
                   onClick={handleOpenAddModal}
-                  className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs"
+                  className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs cursor-pointer"
                 >
                   + Add First Client
                 </button>
               )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-700">
-                <thead className="bg-slate-50/80 border-b border-slate-200 uppercase text-[11px] font-mono tracking-wider text-slate-500 font-semibold">
-                  <tr>
-                    <th className="px-6 py-4">Client / Contact</th>
-                    <th className="px-6 py-4">Company</th>
-                    <th className="px-6 py-4">Tax ID / GSTIN</th>
-                    <th className="px-6 py-4">Added Date</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {clients.map((client) => (
-                    <tr key={client.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="font-semibold text-slate-900">{client.name}</div>
-                        <div className="text-xs text-slate-500">{client.email}</div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-700">
-                        {client.company ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
-                            {client.company}
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 italic text-xs">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-xs font-mono text-slate-600">
-                        {client.gstin || '—'}
-                      </td>
-                      <td className="px-6 py-4 text-xs text-slate-500">
-                        {new Date(client.createdAt).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </td>
-                      <td className="px-6 py-4 text-right space-x-2">
-                        <button
-                          onClick={() => handleOpenEditModal(client)}
-                          className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-colors border border-slate-200"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDeleteError(null);
-                            setClientToDelete(client);
-                          }}
-                          className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition-colors border border-rose-200"
-                        >
-                          Delete
-                        </button>
-                      </td>
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-slate-700">
+                  <thead className="bg-slate-50/80 border-b border-slate-200 uppercase text-[11px] font-mono tracking-wider text-slate-500 font-semibold">
+                    <tr>
+                      <th className="px-6 py-4">Client / Contact</th>
+                      <th className="px-6 py-4">Company</th>
+                      <th className="px-6 py-4">Tax ID / GSTIN</th>
+                      <th className="px-6 py-4">Added Date</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {clients.map((client) => (
+                      <tr key={client.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-semibold text-slate-900">{client.name}</div>
+                          <div className="text-xs text-slate-500">{client.email}</div>
+                        </td>
+                        <td className="px-6 py-4 text-slate-700">
+                          {client.company ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                              {client.company}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 italic text-xs">—</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-xs font-mono text-slate-600">
+                          {client.gstin || '—'}
+                        </td>
+                        <td className="px-6 py-4 text-xs text-slate-500">
+                          {new Date(client.createdAt).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </td>
+                        <td className="px-6 py-4 text-right relative" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative inline-block text-left">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdownId(activeDropdownId === client.id ? null : client.id);
+                              }}
+                              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200 cursor-pointer"
+                              title="Actions"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+
+                            {activeDropdownId === client.id && (
+                              <div className="absolute right-0 mt-1 w-36 bg-white border border-slate-200/90 rounded-xl shadow-xl p-1 z-30 animate-fade-in text-left">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveDropdownId(null);
+                                    handleOpenEditModal(client);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <Edit className="w-3.5 h-3.5 text-slate-500" />
+                                  <span>Edit</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveDropdownId(null);
+                                    setDeleteError(null);
+                                    setClientToDelete(client);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Standardized Pagination Bar */}
+              <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4 text-xs text-slate-500">
+                  <span>
+                    Showing <strong className="font-semibold text-slate-900">{startItem}</strong> to{' '}
+                    <strong className="font-semibold text-slate-900">{endItem}</strong> of{' '}
+                    <strong className="font-semibold text-slate-900">{total}</strong> entries
+                  </span>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-slate-500">Rows:</span>
+                    <select
+                      value={limit}
+                      onChange={(e) => dispatch(setLimit(Number(e.target.value)))}
+                      className="px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-pointer"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => dispatch(setPage(page - 1))}
+                    disabled={page <= 1}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <span className="text-xs font-semibold font-mono text-slate-700 px-2">
+                    Page {page} of {totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => dispatch(setPage(page + 1))}
+                    disabled={page >= totalPages}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
@@ -206,8 +294,8 @@ export default function ClientsListPage() {
       {clientToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
           <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center text-xl">
-              ⚠️
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center">
+              <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900">Delete Client</h3>
@@ -229,14 +317,14 @@ export default function ClientsListPage() {
               <button
                 onClick={() => setClientToDelete(null)}
                 disabled={isDeleting}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors"
+                className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-md shadow-rose-500/20 transition-colors flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-md shadow-rose-500/20 transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {isDeleting ? 'Deleting...' : 'Confirm Delete'}
               </button>

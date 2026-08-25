@@ -1,12 +1,17 @@
 import { prisma } from '../../config/db.js';
 
-export const getClients = async (userId, searchQuery = '') => {
-  const where = {
-    userId,
-  };
+export const getClients = async (userId, options = {}) => {
+  const search = typeof options === 'string' ? options : options.search || '';
+  const page = typeof options === 'object' && options.page ? options.page : 1;
+  const limit = typeof options === 'object' && options.limit ? options.limit : 10;
 
-  if (searchQuery && searchQuery.trim() !== '') {
-    const query = searchQuery.trim();
+  const pageNum = Math.max(1, parseInt(page, 10) || 1);
+  const limitNum = limit === 'all' ? undefined : Math.max(1, parseInt(limit, 10) || 10);
+
+  const where = { userId };
+
+  if (search && search.trim() !== '') {
+    const query = search.trim();
     where.OR = [
       { name: { contains: query } },
       { email: { contains: query } },
@@ -14,7 +19,7 @@ export const getClients = async (userId, searchQuery = '') => {
     ];
   }
 
-  return await prisma.client.findMany({
+  const findOptions = {
     where,
     orderBy: { createdAt: 'desc' },
     select: {
@@ -27,7 +32,24 @@ export const getClients = async (userId, searchQuery = '') => {
       createdAt: true,
       updatedAt: true,
     },
-  });
+  };
+
+  if (limitNum !== undefined) {
+    findOptions.skip = (pageNum - 1) * limitNum;
+    findOptions.take = limitNum;
+  }
+
+  const [clients, total] = await Promise.all([
+    prisma.client.findMany(findOptions),
+    prisma.client.count({ where }),
+  ]);
+
+  return {
+    data: clients,
+    total,
+    page: pageNum,
+    limit: limitNum || total,
+  };
 };
 
 export const getClientById = async (userId, clientId) => {

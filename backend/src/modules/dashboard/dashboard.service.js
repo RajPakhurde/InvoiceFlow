@@ -54,27 +54,62 @@ export const getSummary = async (userId) => {
   };
 };
 
-export const getRevenueChart = async (userId) => {
-  const monthsMap = new Map();
+export const getRevenueChart = async (userId, period = '12months') => {
   const now = new Date();
+  const timeMap = new Map();
+  let startDate;
 
-  // Build continuous 12 months array up to current month
-  for (let i = 11; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const monthKey = `${year}-${month}`;
-    const monthLabel = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  if (period === '30days') {
+    // 30 Days continuous timeline
+    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const key = `${year}-${month}-${day}`;
+      const monthLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-    monthsMap.set(monthKey, {
-      month: monthKey,
-      monthLabel,
-      revenue: 0,
-      expenses: 0,
-    });
+      timeMap.set(key, {
+        month: key,
+        monthLabel,
+        revenue: 0,
+        expenses: 0,
+      });
+    }
+  } else if (period === 'yearly') {
+    // 5 Years continuous timeline
+    const currentYear = now.getFullYear();
+    startDate = new Date(currentYear - 4, 0, 1);
+    for (let i = 4; i >= 0; i--) {
+      const year = currentYear - i;
+      const key = String(year);
+
+      timeMap.set(key, {
+        month: key,
+        monthLabel: key,
+        revenue: 0,
+        expenses: 0,
+      });
+    }
+  } else {
+    // 12 Months continuous timeline (default)
+    startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const key = `${year}-${month}`;
+      const monthLabel = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+
+      timeMap.set(key, {
+        month: key,
+        monthLabel,
+        revenue: 0,
+        expenses: 0,
+      });
+    }
   }
-
-  const startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
   const [paidInvoices, userExpenses] = await Promise.all([
     prisma.invoice.findMany({
@@ -102,9 +137,17 @@ export const getRevenueChart = async (userId) => {
 
   paidInvoices.forEach((inv) => {
     if (inv.paidAt) {
-      const monthKey = inv.paidAt.toISOString().slice(0, 7);
-      if (monthsMap.has(monthKey)) {
-        const entry = monthsMap.get(monthKey);
+      let key;
+      if (period === '30days') {
+        key = inv.paidAt.toISOString().slice(0, 10);
+      } else if (period === 'yearly') {
+        key = String(inv.paidAt.getFullYear());
+      } else {
+        key = inv.paidAt.toISOString().slice(0, 7);
+      }
+
+      if (timeMap.has(key)) {
+        const entry = timeMap.get(key);
         entry.revenue += inv.total;
       }
     }
@@ -112,13 +155,21 @@ export const getRevenueChart = async (userId) => {
 
   userExpenses.forEach((exp) => {
     if (exp.date) {
-      const monthKey = exp.date.toISOString().slice(0, 7);
-      if (monthsMap.has(monthKey)) {
-        const entry = monthsMap.get(monthKey);
+      let key;
+      if (period === '30days') {
+        key = exp.date.toISOString().slice(0, 10);
+      } else if (period === 'yearly') {
+        key = String(exp.date.getFullYear());
+      } else {
+        key = exp.date.toISOString().slice(0, 7);
+      }
+
+      if (timeMap.has(key)) {
+        const entry = timeMap.get(key);
         entry.expenses += exp.amount;
       }
     }
   });
 
-  return Array.from(monthsMap.values());
+  return Array.from(timeMap.values());
 };

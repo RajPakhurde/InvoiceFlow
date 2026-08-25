@@ -1,8 +1,8 @@
 import { axiosClient } from './axiosClient';
 
-export const fetchClientsApi = async (search = '') => {
-  const params = search ? { search } : {};
-  const response = await axiosClient.get('/clients', { params });
+export const fetchClientsApi = async (params = {}) => {
+  const queryParams = typeof params === 'string' ? { search: params } : params;
+  const response = await axiosClient.get('/clients', { params: queryParams });
   return response.data;
 };
 

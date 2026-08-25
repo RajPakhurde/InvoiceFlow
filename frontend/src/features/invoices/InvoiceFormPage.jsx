@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { AlertTriangle, X, Plus } from 'lucide-react';
 import { createInvoice, updateInvoice, fetchInvoiceById } from './invoicesSlice';
 import { fetchClientsApi } from '../../api/clientsApi';
 
@@ -29,9 +30,14 @@ export default function InvoiceFormPage() {
   const [formError, setFormError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load clients dropdown
+  // Load clients dropdown safely (support paginated response shape)
   useEffect(() => {
-    fetchClientsApi().then((data) => setClients(data)).catch((err) => console.error(err));
+    fetchClientsApi({ limit: 'all' })
+      .then((res) => {
+        const clientList = Array.isArray(res) ? res : res?.data || [];
+        setClients(clientList);
+      })
+      .catch((err) => console.error('Failed to load clients dropdown:', err));
   }, []);
 
   // Load existing invoice if edit mode
@@ -133,33 +139,34 @@ export default function InvoiceFormPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 text-slate-900">
+      <div className="max-w-5xl mx-auto space-y-4">
         
-        {/* Header */}
-        <div className="flex items-center justify-between bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
-          <div>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-              <Link to="/invoices" className="hover:text-blue-600 transition-colors">Invoices</Link>
-              <span>/</span>
-              <span className="text-slate-900 font-semibold">{isEditMode ? 'Edit Invoice' : 'New Invoice'}</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              {isEditMode ? `Edit Invoice ${selectedInvoice?.invoiceNumber || ''}` : 'Create New Invoice'}
-            </h1>
+        {/* Header Card with Small Breadcrumb & Emphasized End Title */}
+        <div className="flex items-center justify-between bg-white border border-slate-200/80 p-5 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-2">
+            <Link to="/invoices" className="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
+              Invoices
+            </Link>
+            <span className="text-xs text-slate-400 font-normal">/</span>
+            <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900 font-display">
+              {isEditMode ? `Edit Invoice ${selectedInvoice?.invoiceNumber || ''}` : 'New Invoice'}
+            </span>
           </div>
+
           <Link
             to="/invoices"
-            className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors"
+            className="p-2 rounded-xl border border-slate-200/80 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+            title="Close"
           >
-            Cancel
+            <X className="w-5 h-5" />
           </Link>
         </div>
 
         {/* Read-Only Warning Banner */}
         {isReadOnly && (
           <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-center gap-3">
-            <span className="text-lg">⚠️</span>
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
             <span>
               This invoice is currently in <strong className="uppercase">{selectedInvoice.status}</strong> status. Only <strong>draft</strong> invoices can be modified.
             </span>
@@ -174,11 +181,11 @@ export default function InvoiceFormPage() {
         )}
 
         {/* Main Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           
           {/* Section 1: Client & Dates */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100 font-mono">
               1. General Details
             </h2>
 
@@ -233,16 +240,17 @@ export default function InvoiceFormPage() {
           {/* Section 2: Dynamic Line Items */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 font-mono">
                 2. Line Items
               </h2>
               {!isReadOnly && (
                 <button
                   type="button"
                   onClick={handleAddItem}
-                  className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-colors border border-blue-200"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-colors border border-blue-200 cursor-pointer"
                 >
-                  + Add Item Row
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Item Row</span>
                 </button>
               )}
             </div>
@@ -314,10 +322,10 @@ export default function InvoiceFormPage() {
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(index)}
-                          className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition-colors text-xs font-bold shrink-0"
+                          className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition-colors text-xs font-bold shrink-0 cursor-pointer"
                           title="Remove item"
                         >
-                          ✕
+                          <X className="w-4 h-4" />
                         </button>
                       )}
                     </div>
@@ -328,9 +336,9 @@ export default function InvoiceFormPage() {
           </div>
 
           {/* Section 3: Summary Totals & Notes */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100 font-mono">
                 Notes & Terms (Optional)
               </h2>
               <textarea
@@ -344,7 +352,7 @@ export default function InvoiceFormPage() {
             </div>
 
             <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-3">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 pb-2 border-b border-slate-100 font-mono">
                 Calculated Summary
               </h2>
 
@@ -384,17 +392,17 @@ export default function InvoiceFormPage() {
 
           {/* Form Action Buttons */}
           {!isReadOnly && (
-            <div className="flex items-center justify-end gap-4">
+            <div className="flex items-center justify-end gap-3 pt-1">
               <Link
                 to="/invoices"
-                className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-sm font-medium transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-sm font-medium transition-colors cursor-pointer"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? 'Saving...' : isEditMode ? 'Update Invoice' : 'Save Invoice as Draft'}
               </button>

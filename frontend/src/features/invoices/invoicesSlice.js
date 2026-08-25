@@ -87,7 +87,7 @@ const invoicesSlice = createSlice({
     selectedInvoice: null,
     total: 0,
     page: 1,
-    limit: 20,
+    limit: 10,
     statusFilter: 'all',
     status: 'idle',
     error: null,
@@ -99,6 +99,10 @@ const invoicesSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
+    },
+    setLimit: (state, action) => {
+      state.limit = action.payload;
+      state.page = 1;
     },
     clearInvoicesError: (state) => {
       state.error = null;
@@ -162,5 +166,5 @@ const invoicesSlice = createSlice({
   },
 });
 
-export const { setStatusFilter, setPage, clearInvoicesError, clearSelectedInvoice } = invoicesSlice.actions;
+export const { setStatusFilter, setPage, setLimit, clearInvoicesError, clearSelectedInvoice } = invoicesSlice.actions;
 export default invoicesSlice.reducer;

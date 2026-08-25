@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch } from 'react-redux';
+import { User, Pencil, X } from 'lucide-react';
 import { createClient, updateClient } from './clientsSlice';
 
 const clientSchema = z.object({
@@ -67,7 +68,7 @@ export default function ClientFormModal({ isOpen, onClose, existingClient }) {
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center font-bold">
-              {existingClient ? '✏️' : '👤'}
+              {existingClient ? <Pencil className="w-5 h-5" /> : <User className="w-5 h-5" />}
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900">
@@ -80,9 +81,9 @@ export default function ClientFormModal({ isOpen, onClose, existingClient }) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors font-semibold text-sm"
+            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors text-sm"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
 

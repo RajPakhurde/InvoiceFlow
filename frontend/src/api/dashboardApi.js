@@ -5,7 +5,7 @@ export const fetchDashboardSummaryApi = async () => {
   return response.data;
 };
 
-export const fetchDashboardChartApi = async () => {
-  const response = await axiosClient.get('/dashboard/revenue-chart');
+export const fetchDashboardChartApi = async (period = '12months') => {
+  const response = await axiosClient.get(`/dashboard/revenue-chart?period=${period}`);
   return response.data;
 };

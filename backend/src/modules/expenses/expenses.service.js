@@ -1,6 +1,9 @@
 import { prisma } from '../../config/db.js';
 
-export const getExpenses = async (userId, { category, startDate, endDate } = {}) => {
+export const getExpenses = async (userId, { category, startDate, endDate, page = 1, limit = 10 } = {}) => {
+  const pageNum = Math.max(1, parseInt(page, 10) || 1);
+  const limitNum = limit === 'all' ? undefined : Math.max(1, parseInt(limit, 10) || 10);
+
   const where = { userId };
 
   if (category && category.trim() !== '' && category.toLowerCase() !== 'all') {
@@ -13,29 +16,56 @@ export const getExpenses = async (userId, { category, startDate, endDate } = {})
       where.date.gte = new Date(startDate);
     }
     if (endDate) {
-      // Set end of day for inclusive date filtering
       const end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
       where.date.lte = end;
     }
   }
 
-  return await prisma.expense.findMany({
+  const findOptions = {
     where,
     orderBy: { date: 'desc' },
-  });
+  };
+
+  if (limitNum !== undefined) {
+    findOptions.skip = (pageNum - 1) * limitNum;
+    findOptions.take = limitNum;
+  }
+
+  const [expenses, total] = await Promise.all([
+    prisma.expense.findMany(findOptions),
+    prisma.expense.count({ where }),
+  ]);
+
+  const formattedExpenses = expenses.map((exp) => ({
+    ...exp,
+    description: exp.note || '',
+  }));
+
+  return {
+    data: formattedExpenses,
+    total,
+    page: pageNum,
+    limit: limitNum || total,
+  };
 };
 
 export const createExpense = async (userId, data) => {
-  return await prisma.expense.create({
+  const noteText = (data.note || data.description || '').trim();
+  const created = await prisma.expense.create({
     data: {
       userId,
       category: data.category.trim(),
       amount: Number(data.amount),
       date: new Date(data.date),
-      note: data.note ? data.note.trim() : null,
+      note: noteText || null,
     },
   });
+
+  return {
+    ...created,
+    description: created.note || '',
+  };
 };
 
 export const updateExpense = async (userId, expenseId, data) => {
@@ -50,15 +80,21 @@ export const updateExpense = async (userId, expenseId, data) => {
     throw error;
   }
 
-  return await prisma.expense.update({
+  const noteText = (data.note || data.description || '').trim();
+  const updated = await prisma.expense.update({
     where: { id: expenseId },
     data: {
       category: data.category.trim(),
       amount: Number(data.amount),
       date: new Date(data.date),
-      note: data.note ? data.note.trim() : null,
+      note: noteText || null,
     },
   });
+
+  return {
+    ...updated,
+    description: updated.note || '',
+  };
 };
 
 export const deleteExpense = async (userId, expenseId) => {

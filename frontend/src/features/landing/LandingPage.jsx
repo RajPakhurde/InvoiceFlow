@@ -150,7 +150,7 @@ export default function LandingPage() {
 
         </div>
 
-        {/* Mobile Expanded Drawer Menu with Framer Motion AnimatePresence */}
+        {/* Mobile Expanded Drawer Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -243,10 +243,16 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            {/* Hero Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/80 border border-blue-200/80 text-blue-700 text-xs font-mono font-semibold shadow-2xs backdrop-blur-md">
-              <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
-              <span>THE MODERN FINANCIAL PLATFORM FOR SAAS & FREELANCERS</span>
+            {/* Hero Eyebrow Header with Faded Center-Thick Horizontal Line */}
+            <div className="inline-flex flex-col items-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600 flex items-center justify-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+                THE MODERN FINANCIAL PLATFORM FOR SAAS & FREELANCERS
+              </span>
+              <div className="relative w-72 sm:w-96 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-blue-600 to-transparent" />
+              </div>
             </div>
 
             {/* Main Headline */}
@@ -352,7 +358,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Interactive Application Showcase Section (Using Actual Screenshots & AnimatePresence) */}
+      {/* Interactive Application Showcase Section */}
       <section id="showcase" className="py-20 bg-white border-y border-slate-200/80 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
@@ -363,9 +369,17 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center space-y-3 max-w-3xl mx-auto"
           >
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60">
-              APPLICATION SHOWCASE
-            </span>
+            {/* Eyebrow Header with Faded Center-Thick Line */}
+            <div className="inline-flex flex-col items-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600">
+                APPLICATION SHOWCASE
+              </span>
+              <div className="relative w-48 sm:w-56 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-blue-600 to-transparent" />
+              </div>
+            </div>
+
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
               Built for speed, accuracy, and executive financial clarity.
             </h2>
@@ -460,7 +474,7 @@ export default function LandingPage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Screenshot Display (Right 8 Columns) - Linear.app Style 3D Blended UI (Zero Borders) with AnimatePresence */}
+            {/* Screenshot Display (Right 8 Columns) - Linear.app Style 3D Blended UI (Zero Borders) */}
             <div className="lg:col-span-8 relative group [perspective:1400px]">
               
               {/* Ambient Soft Backlight Glow */}
@@ -505,9 +519,17 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center space-y-3 max-w-3xl mx-auto"
           >
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200/60">
-              POWERFUL FEATURES
-            </span>
+            {/* Eyebrow Header with Faded Center-Thick Line */}
+            <div className="inline-flex flex-col items-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-600">
+                POWERFUL FEATURES
+              </span>
+              <div className="relative w-48 sm:w-56 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-indigo-600 to-transparent" />
+              </div>
+            </div>
+
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
               Everything you need to master your cash flow.
             </h2>
@@ -642,9 +664,17 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center space-y-3 max-w-3xl mx-auto"
           >
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
-              TRANSPARENT PRICING
-            </span>
+            {/* Eyebrow Header with Faded Center-Thick Line */}
+            <div className="inline-flex flex-col items-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-600">
+                TRANSPARENT PRICING
+              </span>
+              <div className="relative w-48 sm:w-56 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-600 to-transparent" />
+              </div>
+            </div>
+
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
               Simple plans for businesses of all sizes.
             </h2>
@@ -788,7 +818,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FAQ Section with Framer Motion Accordion */}
+      {/* FAQ Section */}
       <section id="faq" className="py-20 bg-[#f8fafc] border-t border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
@@ -799,9 +829,17 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center space-y-3"
           >
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60">
-              FREQUENTLY ASKED QUESTIONS
-            </span>
+            {/* Eyebrow Header with Faded Center-Thick Line */}
+            <div className="inline-flex flex-col items-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600">
+                FREQUENTLY ASKED QUESTIONS
+              </span>
+              <div className="relative w-56 sm:w-72 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-blue-600 to-transparent" />
+              </div>
+            </div>
+
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
               Have questions? We have answers.
             </h2>

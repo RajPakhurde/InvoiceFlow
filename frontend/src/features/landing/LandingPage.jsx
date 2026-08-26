@@ -24,8 +24,20 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [direction, setDirection] = useState(1);
   const [activeFaq, setActiveFaq] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const tabKeys = ['dashboard', 'invoices', 'detail'];
+
+  const handleTabClick = (newTabKey) => {
+    const currentIndex = tabKeys.indexOf(activeTab);
+    const newIndex = tabKeys.indexOf(newTabKey);
+    if (newIndex !== currentIndex) {
+      setDirection(newIndex > currentIndex ? 1 : -1);
+      setActiveTab(newTabKey);
+    }
+  };
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -50,6 +62,58 @@ export default function LandingPage() {
       img: '/assets/if-invoice.png',
       alt: 'InvoiceFlow PDF Receipt Detail Screenshot',
     },
+  };
+
+  const showcaseTextVariants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.92,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.45,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    },
+    exit: (dir) => ({
+      x: dir < 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.92,
+      transition: {
+        duration: 0.35,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    }),
+  };
+
+  const showcaseImageVariants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 150 : -150,
+      opacity: 0,
+      scale: 0.88,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    },
+    exit: (dir) => ({
+      x: dir < 0 ? 150 : -150,
+      opacity: 0,
+      scale: 0.88,
+      transition: {
+        duration: 0.4,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    }),
   };
 
   const faqs = [
@@ -359,7 +423,7 @@ export default function LandingPage() {
       </section>
 
       {/* Interactive Application Showcase Section */}
-      <section id="showcase" className="py-20 bg-white border-y border-slate-200/80 relative">
+      <section id="showcase" className="py-20 bg-white border-y border-slate-200/80 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <motion.div
@@ -391,7 +455,7 @@ export default function LandingPage() {
           {/* Interactive Showcase Tabs */}
           <div className="flex justify-center gap-2 sm:gap-4 border-b border-slate-200 pb-4 overflow-x-auto">
             <button
-              onClick={() => setActiveTab('dashboard')}
+              onClick={() => handleTabClick('dashboard')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'dashboard'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -403,7 +467,7 @@ export default function LandingPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('invoices')}
+              onClick={() => handleTabClick('invoices')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'invoices'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -415,7 +479,7 @@ export default function LandingPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('detail')}
+              onClick={() => handleTabClick('detail')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'detail'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -427,17 +491,18 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Active Screenshot Presentation */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
+          {/* Active Screenshot Presentation with Direction-Aware Framer Motion Animations */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4 min-h-[440px]">
             
             {/* Screenshot Details (Left 4 Columns) */}
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeTab + '-text'}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.4 }}
+                custom={direction}
+                variants={showcaseTextVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
                 className="lg:col-span-4 space-y-4"
               >
                 <h3 className="text-2xl font-bold text-slate-900 font-display">
@@ -474,7 +539,7 @@ export default function LandingPage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Screenshot Display (Right 8 Columns) */}
+            {/* Screenshot Display (Right 8 Columns) - Directional Scale Down + Extreme Left/Right Slide */}
             <div className="lg:col-span-8 relative group [perspective:1400px]">
               
               {/* Ambient Soft Backlight Glow */}
@@ -484,13 +549,14 @@ export default function LandingPage() {
                 'bg-gradient-to-r from-emerald-600/30 via-teal-600/25 to-blue-600/25'
               }`} />
 
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
                   key={activeTab + '-image'}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
+                  custom={direction}
+                  variants={showcaseImageVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
                   className="relative overflow-hidden py-4 transition-all duration-700 ease-out [transform:rotateX(12deg)_rotateY(-16deg)_rotateZ(4deg)_scale(1.02)] group-hover:[transform:rotateX(0deg)_rotateY(0deg)_rotateZ(0deg)_scale(1.0)]"
                 >
                   <img

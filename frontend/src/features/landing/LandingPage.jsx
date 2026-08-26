@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
   TrendingUp,
@@ -74,15 +75,22 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-500 selection:text-white">
       
       {/* Top Floating Glass Landing Navbar */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img
+            <motion.img
+              whileHover={{ rotate: 10, scale: 1.1 }}
+              transition={{ type: 'spring', stiffness: 300 }}
               src="/invoiceflow_logo.jpg"
               alt="InvoiceFlow Logo"
-              className="w-9 h-9 rounded-2xl object-cover border border-slate-200/80 shadow-xs group-hover:scale-105 transition-transform"
+              className="w-9 h-9 rounded-2xl object-cover border border-slate-200/80 shadow-xs"
             />
             <span className="text-xl font-extrabold tracking-tight text-slate-900 font-display">
               Invoice<span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Flow</span>
@@ -115,13 +123,15 @@ export default function LandingPage() {
                 >
                   Sign In
                 </Link>
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all cursor-pointer"
-                >
-                  <span>Get Started Free</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Link
+                    to="/register"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+                  >
+                    <span>Get Started Free</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
               </>
             )}
           </div>
@@ -140,74 +150,82 @@ export default function LandingPage() {
 
         </div>
 
-        {/* Mobile Expanded Drawer Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-2xl border-b border-slate-200/90 px-4 pt-3 pb-6 space-y-4 animate-fade-in">
-            <nav className="flex flex-col space-y-3 font-semibold text-sm text-slate-700 border-b border-slate-100 pb-4">
-              <a
-                href="#showcase"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
-              >
-                Showcase
-              </a>
-              <a
-                href="#features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#pricing"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#faq"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
-              >
-                FAQ
-              </a>
-            </nav>
-
-            <div className="flex flex-col gap-2.5">
-              {isAuthenticated ? (
-                <Link
-                  to="/dashboard"
+        {/* Mobile Expanded Drawer Menu with Framer Motion AnimatePresence */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden bg-white/95 backdrop-blur-2xl border-b border-slate-200/90 px-4 pt-3 pb-6 space-y-4 overflow-hidden"
+            >
+              <nav className="flex flex-col space-y-3 font-semibold text-sm text-slate-700 border-b border-slate-100 pb-4">
+                <a
+                  href="#showcase"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
+                  className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
                 >
-                  <span>Go to Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
-                <>
+                  Showcase
+                </a>
+                <a
+                  href="#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                >
+                  Features
+                </a>
+                <a
+                  href="#pricing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                >
+                  Pricing
+                </a>
+                <a
+                  href="#faq"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                >
+                  FAQ
+                </a>
+              </nav>
+
+              <div className="flex flex-col gap-2.5">
+                {isAuthenticated ? (
                   <Link
-                    to="/register"
+                    to="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
                   >
-                    <span>Get Started Free</span>
+                    <span>Go to Dashboard</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50"
-                  >
-                    Sign In to Account
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+                ) : (
+                  <>
+                    <Link
+                      to="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
+                    >
+                      <span>Get Started Free</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full text-center py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50"
+                    >
+                      Sign In to Account
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      </header>
+      </motion.header>
 
       {/* Hero Section */}
       <section className="relative pt-12 sm:pt-20 pb-20 overflow-hidden">
@@ -218,43 +236,65 @@ export default function LandingPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
           
-          {/* Hero Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/80 border border-blue-200/80 text-blue-700 text-xs font-mono font-semibold shadow-2xs backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
-            <span>THE MODERN FINANCIAL PLATFORM FOR SAAS & FREELANCERS</span>
-          </div>
+          {/* Staggered Entrance Animations */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
+          >
+            {/* Hero Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/80 border border-blue-200/80 text-blue-700 text-xs font-mono font-semibold shadow-2xs backdrop-blur-md">
+              <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+              <span>THE MODERN FINANCIAL PLATFORM FOR SAAS & FREELANCERS</span>
+            </div>
 
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 font-display max-w-4xl mx-auto leading-[1.15]">
-            Smart Invoicing & Financial Management Made <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">Effortless</span>.
-          </h1>
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 font-display max-w-4xl mx-auto leading-[1.15]">
+              Smart Invoicing & Financial Management Made <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">Effortless</span>.
+            </h1>
 
-          {/* Subtext */}
-          <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-            Create pixel-perfect PDF receipts, track real-time revenue analytics, monitor business expenses, and streamline client billing in one intuitive hub.
-          </p>
+            {/* Subtext */}
+            <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+              Create pixel-perfect PDF receipts, track real-time revenue analytics, monitor business expenses, and streamline client billing in one intuitive hub.
+            </p>
+          </motion.div>
 
           {/* Hero CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link
-              to="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 active:scale-[0.99] transition-all cursor-pointer"
-            >
-              <span>Start Free Trial Today</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
+          >
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              <Link
+                to="/register"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
+              >
+                <span>Start Free Trial Today</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
 
-            <a
+            <motion.a
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               href="#showcase"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-base shadow-xs transition-colors cursor-pointer"
             >
               <BarChart3 className="w-5 h-5 text-blue-600" />
               <span>Explore Live Showcase</span>
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
 
           {/* Security & Feature Micro-Bullets */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-500 pt-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-500 pt-4"
+          >
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
               No credit card required
@@ -267,16 +307,23 @@ export default function LandingPage() {
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
               256-bit SSL Data Security
             </span>
-          </div>
+          </motion.div>
 
-          {/* Main Hero App Screenshot Frame (macOS Window Style) */}
-          <div className="pt-8 max-w-6xl mx-auto relative group">
-            
+          {/* Main Hero App Screenshot Frame (macOS Window Style with Floating Framer Motion Physics) */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="pt-8 max-w-6xl mx-auto relative group"
+          >
             {/* Ambient Radial Backlight Glow */}
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/30 via-indigo-600/25 to-emerald-600/25 rounded-3xl blur-3xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-            <div className="relative rounded-3xl bg-slate-950/90 backdrop-blur-2xl p-2.5 sm:p-4 shadow-[0_30px_90px_-15px_rgba(59,130,246,0.35)] border border-slate-800/90 transition-all duration-500 hover:scale-[1.01]">
-              
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative rounded-3xl bg-slate-950/90 backdrop-blur-2xl p-2.5 sm:p-4 shadow-[0_30px_90px_-15px_rgba(59,130,246,0.35)] border border-slate-800/90 transition-all duration-500 hover:scale-[1.01]"
+            >
               {/* macOS Window Header Bar */}
               <div className="flex items-center justify-between pb-3 px-3">
                 <div className="flex items-center gap-2">
@@ -299,17 +346,23 @@ export default function LandingPage() {
                   className="w-full rounded-2xl object-cover"
                 />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
         </div>
       </section>
 
-      {/* Interactive Application Showcase Section (Using Actual Screenshots) */}
+      {/* Interactive Application Showcase Section (Using Actual Screenshots & AnimatePresence) */}
       <section id="showcase" className="py-20 bg-white border-y border-slate-200/80 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-3 max-w-3xl mx-auto"
+          >
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60">
               APPLICATION SHOWCASE
             </span>
@@ -319,7 +372,7 @@ export default function LandingPage() {
             <p className="text-slate-600 text-base sm:text-lg">
               Explore the exact features and interfaces built into InvoiceFlow.
             </p>
-          </div>
+          </motion.div>
 
           {/* Interactive Showcase Tabs */}
           <div className="flex justify-center gap-2 sm:gap-4 border-b border-slate-200 pb-4 overflow-x-auto">
@@ -360,45 +413,54 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Active Screenshot Presentation */}
+          {/* Active Screenshot Presentation with Framer Motion AnimatePresence */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
             
             {/* Screenshot Details (Left 4 Columns) */}
-            <div className="lg:col-span-4 space-y-4">
-              <h3 className="text-2xl font-bold text-slate-900 font-display">
-                {screenshots[activeTab].title}
-              </h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                {screenshots[activeTab].subtitle}
-              </p>
-              
-              <ul className="space-y-2.5 pt-2 text-xs font-semibold text-slate-700">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Real-time state synchronization with Redux Toolkit</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Sub-second server response times & pagination</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Minimalist enterprise typography & micro-interactions</span>
-                </li>
-              </ul>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab + '-text'}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.4 }}
+                className="lg:col-span-4 space-y-4"
+              >
+                <h3 className="text-2xl font-bold text-slate-900 font-display">
+                  {screenshots[activeTab].title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {screenshots[activeTab].subtitle}
+                </p>
+                
+                <ul className="space-y-2.5 pt-2 text-xs font-semibold text-slate-700">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>Real-time state synchronization with Redux Toolkit</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>Sub-second server response times & pagination</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>Minimalist enterprise typography & micro-interactions</span>
+                  </li>
+                </ul>
 
-              <div className="pt-4">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition-colors cursor-pointer"
-                >
-                  <span>Try this feature now</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
+                <div className="pt-4">
+                  <Link
+                    to="/register"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition-colors cursor-pointer"
+                  >
+                    <span>Try this feature now</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </motion.div>
+            </AnimatePresence>
 
-            {/* Screenshot Display (Right 8 Columns) - Linear.app Style 3D Blended UI (Zero Borders) */}
+            {/* Screenshot Display (Right 8 Columns) - Linear.app Style 3D Blended UI (Zero Borders) with AnimatePresence */}
             <div className="lg:col-span-8 relative group [perspective:1400px]">
               
               {/* Ambient Soft Backlight Glow */}
@@ -408,14 +470,22 @@ export default function LandingPage() {
                 'bg-gradient-to-r from-emerald-600/30 via-teal-600/25 to-blue-600/25'
               }`} />
 
-              {/* Linear-style Tilted UI Image Container (Zero Borders, Radial Edge Mask Fade) */}
-              <div className="relative overflow-hidden py-4 transition-all duration-700 ease-out [transform:rotateX(12deg)_rotateY(-16deg)_rotateZ(4deg)_scale(1.02)] group-hover:[transform:rotateX(0deg)_rotateY(0deg)_rotateZ(0deg)_scale(1.0)]">
-                <img
-                  src={screenshots[activeTab].img}
-                  alt={screenshots[activeTab].alt}
-                  className="w-full object-cover shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)] transition-all duration-500 [mask-image:radial-gradient(ellipse_92%_88%_at_50%_45%,#000_50%,transparent_100%)]"
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab + '-image'}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  className="relative overflow-hidden py-4 transition-all duration-700 ease-out [transform:rotateX(12deg)_rotateY(-16deg)_rotateZ(4deg)_scale(1.02)] group-hover:[transform:rotateX(0deg)_rotateY(0deg)_rotateZ(0deg)_scale(1.0)]"
+                >
+                  <img
+                    src={screenshots[activeTab].img}
+                    alt={screenshots[activeTab].alt}
+                    className="w-full object-cover shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)] transition-all duration-500 [mask-image:radial-gradient(ellipse_92%_88%_at_50%_45%,#000_50%,transparent_100%)]"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
             </div>
 
@@ -428,7 +498,13 @@ export default function LandingPage() {
       <section id="features" className="py-20 bg-[#f8fafc] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-3 max-w-3xl mx-auto"
+          >
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200/60">
               POWERFUL FEATURES
             </span>
@@ -438,12 +514,19 @@ export default function LandingPage() {
             <p className="text-slate-600 text-base sm:text-lg">
               Designed from the ground up for modern businesses, agency owners, and independent professionals.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
             {/* Feature 1 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-blue-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-blue-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
               </div>
@@ -451,10 +534,17 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 Generate clean PDF receipts formatted with custom line items, unit rates, tax percentages, and terms.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 2 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-emerald-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-6 h-6" />
               </div>
@@ -462,10 +552,17 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 Visualize continuous cash flow trends across 30 days, 12 months, and 5-year comparison timeframes.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 3 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-amber-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-amber-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <CreditCard className="w-6 h-6" />
               </div>
@@ -473,10 +570,17 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 Categorize business outgoings by vendor, date, and budget tier to calculate true Net Profit margins.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 4 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-indigo-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <UserCheck className="w-6 h-6" />
               </div>
@@ -484,10 +588,17 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 Store client contact profiles, corporate addresses, and Tax/GSTIN identifiers for seamless billing.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 5 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-rose-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-rose-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Layers className="w-6 h-6" />
               </div>
@@ -495,10 +606,17 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 High-performance Prisma database pagination with rows-per-page selectors for rendering massive data sets.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 6 */}
-            <div className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-md hover:border-sky-300 transition-all space-y-4 group">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-sky-300 transition-all space-y-4 group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-6 h-6" />
               </div>
@@ -506,7 +624,7 @@ export default function LandingPage() {
               <p className="text-slate-600 text-sm leading-relaxed">
                 Secure cookie & token authentication with 256-bit SSL encrypted backend PostgreSQL storage.
               </p>
-            </div>
+            </motion.div>
 
           </div>
 
@@ -517,7 +635,13 @@ export default function LandingPage() {
       <section id="pricing" className="py-20 bg-white border-t border-slate-200/80 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-3 max-w-3xl mx-auto"
+          >
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
               TRANSPARENT PRICING
             </span>
@@ -527,12 +651,19 @@ export default function LandingPage() {
             <p className="text-slate-600 text-base sm:text-lg">
               No hidden fees. Start free and scale as your transaction volume grows.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             
             {/* Starter Plan */}
-            <div className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8 }}
+              transition={{ duration: 0.4 }}
+              className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between"
+            >
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-slate-900 font-display">Starter</h3>
                 <p className="text-slate-500 text-xs">For freelancers & solo creators</p>
@@ -562,10 +693,17 @@ export default function LandingPage() {
               >
                 Get Started Free
               </Link>
-            </div>
+            </motion.div>
 
             {/* Pro Plan (Featured) */}
-            <div className="bg-slate-950 border-2 border-blue-600 p-8 rounded-3xl space-y-6 flex flex-col justify-between text-white relative shadow-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="bg-slate-950 border-2 border-blue-600 p-8 rounded-3xl space-y-6 flex flex-col justify-between text-white relative shadow-2xl"
+            >
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[10px] uppercase font-bold tracking-wider rounded-full shadow-md">
                 MOST POPULAR
               </div>
@@ -603,10 +741,17 @@ export default function LandingPage() {
               >
                 Start 14-Day Free Trial
               </Link>
-            </div>
+            </motion.div>
 
             {/* Enterprise Plan */}
-            <div className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between"
+            >
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-slate-900 font-display">Enterprise</h3>
                 <p className="text-slate-500 text-xs">For large organizations</p>
@@ -636,43 +781,67 @@ export default function LandingPage() {
               >
                 Contact Sales
               </Link>
-            </div>
+            </motion.div>
 
           </div>
 
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ Section with Framer Motion Accordion */}
       <section id="faq" className="py-20 bg-[#f8fafc] border-t border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="text-center space-y-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-3"
+          >
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60">
               FREQUENTLY ASKED QUESTIONS
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
               Have questions? We have answers.
             </h2>
-          </div>
+          </motion.div>
 
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs cursor-pointer transition-all"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: idx * 0.1 }}
+                className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs cursor-pointer transition-all overflow-hidden"
                 onClick={() => toggleFaq(idx)}
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-base font-bold text-slate-900">{faq.q}</h3>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${activeFaq === idx ? 'rotate-180' : ''}`} />
+                  <motion.div
+                    animate={{ rotate: activeFaq === idx ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                  </motion.div>
                 </div>
-                {activeFaq === idx && (
-                  <p className="mt-3 text-sm text-slate-600 pt-3 border-t border-slate-100 leading-relaxed">
-                    {faq.a}
-                  </p>
-                )}
-              </div>
+                <AnimatePresence>
+                  {activeFaq === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <p className="mt-3 text-sm text-slate-600 pt-3 border-t border-slate-100 leading-relaxed">
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </div>
 
@@ -683,7 +852,13 @@ export default function LandingPage() {
       <section className="py-20 bg-slate-950 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.3),rgba(255,255,255,0))] pointer-events-none" />
         
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10"
+        >
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-display">
             Ready to streamline your invoicing & financial management?
           </h2>
@@ -692,15 +867,17 @@ export default function LandingPage() {
           </p>
 
           <div className="pt-2">
-            <Link
-              to="/register"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 active:scale-[0.99] transition-all cursor-pointer"
-            >
-              <span>Get Started Free Today</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
+              >
+                <span>Get Started Free Today</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Landing Footer */}

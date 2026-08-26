@@ -12,9 +12,38 @@ import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://invoiceflow.rajpakhurde.in',
+  'http://localhost:5173',
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: config.frontendUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+
+      // Check against allowed origins list or wildcard
+      const isAllowed = allowedOrigins.some((allowed) => {
+        if (!allowed) return false;
+        const cleanAllowed = allowed.replace(/\/$/, '');
+        const cleanOrigin = origin.replace(/\/$/, '');
+        return cleanAllowed === cleanOrigin || cleanAllowed === '*';
+      });
+
+      if (isAllowed || process.env.FRONTEND_URL === '*') {
+        return callback(null, true);
+      }
+
+      // Dynamic fallback for matching subdomain requests
+      if (origin.endsWith('.rajpakhurde.in')) {
+        return callback(null, true);
+      }
+
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

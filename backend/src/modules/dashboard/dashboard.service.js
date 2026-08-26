@@ -27,9 +27,9 @@ export const getSummary = async (userId) => {
     }),
   ]);
 
-  const totalOutstanding = outstandingAgg._sum.total || 0;
-  const totalPaid = paidAgg._sum.total || 0;
-  const totalExpenses = expensesAgg._sum.amount || 0;
+  const totalOutstanding = Number(outstandingAgg._sum.total || 0);
+  const totalPaid = Number(paidAgg._sum.total || 0);
+  const totalExpenses = Number(expensesAgg._sum.amount || 0);
   const netProfit = totalPaid - totalExpenses;
 
   const invoiceCounts = {
@@ -148,7 +148,7 @@ export const getRevenueChart = async (userId, period = '12months') => {
 
       if (timeMap.has(key)) {
         const entry = timeMap.get(key);
-        entry.revenue += inv.total;
+        entry.revenue += Number(inv.total);
       }
     }
   });
@@ -166,7 +166,7 @@ export const getRevenueChart = async (userId, period = '12months') => {
 
       if (timeMap.has(key)) {
         const entry = timeMap.get(key);
-        entry.expenses += exp.amount;
+        entry.expenses += Number(exp.amount);
       }
     }
   });

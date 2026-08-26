@@ -39,6 +39,7 @@ export const getExpenses = async (userId, { category, startDate, endDate, page =
 
   const formattedExpenses = expenses.map((exp) => ({
     ...exp,
+    amount: Number(exp.amount),
     description: exp.note || '',
   }));
 
@@ -64,6 +65,7 @@ export const createExpense = async (userId, data) => {
 
   return {
     ...created,
+    amount: Number(created.amount),
     description: created.note || '',
   };
 };
@@ -93,6 +95,7 @@ export const updateExpense = async (userId, expenseId, data) => {
 
   return {
     ...updated,
+    amount: Number(updated.amount),
     description: updated.note || '',
   };
 };

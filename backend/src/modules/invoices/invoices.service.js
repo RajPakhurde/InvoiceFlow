@@ -54,7 +54,7 @@ export const getInvoices = async (userId, { status, clientId, page = 1, limit = 
     clientId: inv.client ? inv.client.id : null,
     clientCompany: inv.client ? inv.client.company : null,
     status: inv.status,
-    total: inv.total,
+    total: Number(inv.total),
     dueDate: inv.dueDate,
     issueDate: inv.issueDate,
     createdAt: inv.createdAt,
@@ -87,11 +87,21 @@ export const getInvoiceById = async (userId, invoiceId) => {
     throw error;
   }
 
-  return invoice;
+  return {
+    ...invoice,
+    subtotal: Number(invoice.subtotal),
+    taxAmount: Number(invoice.taxAmount),
+    total: Number(invoice.total),
+    items: invoice.items.map((item) => ({
+      ...item,
+      rate: Number(item.rate),
+      amount: Number(item.amount),
+    })),
+  };
 };
 
 export const createInvoice = async (userId, data) => {
-  // 1. Verify client belongs to user
+  // 1. Verify client exists and belongs to user
   const client = await prisma.client.findFirst({
     where: { id: data.clientId, userId },
   });
@@ -122,7 +132,7 @@ export const createInvoice = async (userId, data) => {
   const total = subtotal + taxAmount;
 
   // 3. Create invoice with auto-generated number in a transaction
-  return await prisma.$transaction(async (tx) => {
+  const created = await prisma.$transaction(async (tx) => {
     const invoiceNumber = await generateInvoiceNumber(userId, tx);
 
     return await tx.invoice.create({
@@ -148,6 +158,18 @@ export const createInvoice = async (userId, data) => {
       },
     });
   });
+
+  return {
+    ...created,
+    subtotal: Number(created.subtotal),
+    taxAmount: Number(created.taxAmount),
+    total: Number(created.total),
+    items: created.items.map((item) => ({
+      ...item,
+      rate: Number(item.rate),
+      amount: Number(item.amount),
+    })),
+  };
 };
 
 export const updateInvoice = async (userId, invoiceId, data) => {
@@ -164,25 +186,26 @@ export const updateInvoice = async (userId, invoiceId, data) => {
   }
 
   if (existing.status !== 'draft') {
-    const error = new Error('Only draft invoices can be modified');
-    error.status = 409;
-    error.code = 'CONFLICT';
+    const error = new Error('Only draft invoices can be edited');
+    error.status = 400;
+    error.code = 'INVALID_STATUS';
     throw error;
   }
 
-  // 2. Verify client belongs to user
-  const client = await prisma.client.findFirst({
-    where: { id: data.clientId, userId },
-  });
-
-  if (!client) {
-    const error = new Error('Client not found or access denied');
-    error.status = 404;
-    error.code = 'NOT_FOUND';
-    throw error;
+  // 2. Verify client if changed
+  if (data.clientId && data.clientId !== existing.clientId) {
+    const client = await prisma.client.findFirst({
+      where: { id: data.clientId, userId },
+    });
+    if (!client) {
+      const error = new Error('Client not found or access denied');
+      error.status = 404;
+      error.code = 'NOT_FOUND';
+      throw error;
+    }
   }
 
-  // 3. Recalculate totals
+  // 3. Process line items and compute totals
   const itemsWithAmount = data.items.map((item) => {
     const quantity = Number(item.quantity);
     const rate = Number(item.rate);
@@ -196,29 +219,28 @@ export const updateInvoice = async (userId, invoiceId, data) => {
   });
 
   const subtotal = itemsWithAmount.reduce((sum, item) => sum + item.amount, 0);
-  const taxPercent = Number(data.taxPercent || 0);
+  const taxPercent = Number(data.taxPercent !== undefined ? data.taxPercent : existing.taxPercent);
   const taxAmount = subtotal * (taxPercent / 100);
   const total = subtotal + taxAmount;
 
-  // 4. Update invoice and replace line items in transaction
-  return await prisma.$transaction(async (tx) => {
+  // 4. Update invoice in a transaction (replace items)
+  const updated = await prisma.$transaction(async (tx) => {
     // Delete existing line items
     await tx.invoiceItem.deleteMany({
       where: { invoiceId },
     });
 
-    // Update invoice and insert new line items
     return await tx.invoice.update({
       where: { id: invoiceId },
       data: {
-        clientId: data.clientId,
-        issueDate: new Date(data.issueDate),
-        dueDate: new Date(data.dueDate),
+        clientId: data.clientId || existing.clientId,
+        issueDate: data.issueDate ? new Date(data.issueDate) : existing.issueDate,
+        dueDate: data.dueDate ? new Date(data.dueDate) : existing.dueDate,
         taxPercent,
         subtotal,
         taxAmount,
         total,
-        notes: data.notes || null,
+        notes: data.notes !== undefined ? data.notes : existing.notes,
         items: {
           create: itemsWithAmount,
         },
@@ -229,6 +251,18 @@ export const updateInvoice = async (userId, invoiceId, data) => {
       },
     });
   });
+
+  return {
+    ...updated,
+    subtotal: Number(updated.subtotal),
+    taxAmount: Number(updated.taxAmount),
+    total: Number(updated.total),
+    items: updated.items.map((item) => ({
+      ...item,
+      rate: Number(item.rate),
+      amount: Number(item.amount),
+    })),
+  };
 };
 
 export const deleteInvoice = async (userId, invoiceId) => {
@@ -240,13 +274,6 @@ export const deleteInvoice = async (userId, invoiceId) => {
     const error = new Error('Invoice not found');
     error.status = 404;
     error.code = 'NOT_FOUND';
-    throw error;
-  }
-
-  if (existing.status !== 'draft') {
-    const error = new Error('Only draft invoices can be deleted');
-    error.status = 409;
-    error.code = 'CONFLICT';
     throw error;
   }
 
@@ -270,15 +297,18 @@ export const updateInvoiceStatus = async (userId, invoiceId, newStatus) => {
   }
 
   const updateData = { status: newStatus };
+  const now = new Date();
 
-  if (newStatus === 'paid' && !existing.paidAt) {
-    updateData.paidAt = new Date();
-  }
   if (newStatus === 'sent' && !existing.sentAt) {
-    updateData.sentAt = new Date();
+    updateData.sentAt = now;
+  } else if (newStatus === 'paid') {
+    if (!existing.sentAt) {
+      updateData.sentAt = now;
+    }
+    updateData.paidAt = now;
   }
 
-  return await prisma.invoice.update({
+  const updated = await prisma.invoice.update({
     where: { id: invoiceId },
     data: updateData,
     include: {
@@ -286,4 +316,16 @@ export const updateInvoiceStatus = async (userId, invoiceId, newStatus) => {
       client: true,
     },
   });
+
+  return {
+    ...updated,
+    subtotal: Number(updated.subtotal),
+    taxAmount: Number(updated.taxAmount),
+    total: Number(updated.total),
+    items: updated.items.map((item) => ({
+      ...item,
+      rate: Number(item.rate),
+      amount: Number(item.amount),
+    })),
+  };
 };

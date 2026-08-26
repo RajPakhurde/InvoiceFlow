@@ -15,6 +15,8 @@ import {
   Layers,
   ChevronDown,
   Lock,
+  Menu,
+  X,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -22,6 +24,7 @@ export default function LandingPage() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activeFaq, setActiveFaq] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -71,7 +74,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-500 selection:text-white">
       
       {/* Top Floating Glass Landing Navbar */}
-      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo */}
@@ -94,8 +97,8 @@ export default function LandingPage() {
             <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Desktop CTA Buttons (Hidden on Mobile) */}
+          <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
@@ -123,7 +126,87 @@ export default function LandingPage() {
             )}
           </div>
 
+          {/* Mobile Menu Button (Visible ONLY on Mobile) */}
+          <div className="flex md:hidden items-center">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer outline-none"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6 text-slate-900" /> : <Menu className="w-6 h-6 text-slate-900" />}
+            </button>
+          </div>
+
         </div>
+
+        {/* Mobile Expanded Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white/95 backdrop-blur-2xl border-b border-slate-200/90 px-4 pt-3 pb-6 space-y-4 animate-fade-in">
+            <nav className="flex flex-col space-y-3 font-semibold text-sm text-slate-700 border-b border-slate-100 pb-4">
+              <a
+                href="#showcase"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                Showcase
+              </a>
+              <a
+                href="#features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                Pricing
+              </a>
+              <a
+                href="#faq"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                FAQ
+              </a>
+            </nav>
+
+            <div className="flex flex-col gap-2.5">
+              {isAuthenticated ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
+                >
+                  <span>Go to Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
+                  >
+                    <span>Get Started Free</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50"
+                  >
+                    Sign In to Account
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
       </header>
 
       {/* Hero Section */}

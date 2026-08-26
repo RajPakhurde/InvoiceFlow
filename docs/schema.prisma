@@ -6,8 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
 }
 
 // ------------------------------
@@ -68,9 +67,9 @@ model Invoice {
   issueDate     DateTime
   dueDate       DateTime
   taxPercent    Float         @default(0)
-  subtotal      Float
-  taxAmount     Float
-  total         Float
+  subtotal      Decimal       @db.Decimal(10, 2)
+  taxAmount     Decimal       @db.Decimal(10, 2)
+  total         Decimal       @db.Decimal(10, 2)
   notes         String?
   sentAt        DateTime?
   paidAt        DateTime?
@@ -89,12 +88,12 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   invoiceId   String
   description String
   quantity    Float
-  rate        Float
-  amount      Float // quantity * rate, computed on save
+  rate        Decimal @db.Decimal(10, 2)
+  amount      Decimal @db.Decimal(10, 2)
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
@@ -106,7 +105,7 @@ model Expense {
   id        String   @id @default(uuid())
   userId    String
   category  String
-  amount    Float
+  amount    Decimal  @db.Decimal(10, 2)
   date      DateTime
   note      String?
   createdAt DateTime @default(now())

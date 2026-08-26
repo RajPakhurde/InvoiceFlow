@@ -442,43 +442,45 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Interactive Showcase Tabs */}
-          <div className="flex justify-center gap-2 sm:gap-4 border-b border-slate-200 pb-4 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
-                activeTab === 'dashboard'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>1. Executive Dashboard</span>
-            </button>
+          {/* Perfectly Placed Responsive Segmented Showcase Tabs Pill Control */}
+          <div className="max-w-3xl mx-auto px-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/90 shadow-inner">
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  activeTab === 'dashboard'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                }`}
+              >
+                <BarChart3 className="w-4 h-4 shrink-0" />
+                <span className="truncate">1. Executive Dashboard</span>
+              </button>
 
-            <button
-              onClick={() => setActiveTab('invoices')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
-                activeTab === 'invoices'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              <FileText className="w-4 h-4" />
-              <span>2. Invoices & Billing Table</span>
-            </button>
+              <button
+                onClick={() => setActiveTab('invoices')}
+                className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  activeTab === 'invoices'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                }`}
+              >
+                <FileText className="w-4 h-4 shrink-0" />
+                <span className="truncate">2. Invoices & Billing</span>
+              </button>
 
-            <button
-              onClick={() => setActiveTab('detail')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
-                activeTab === 'detail'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              <Zap className="w-4 h-4" />
-              <span>3. PDF Receipts & Details</span>
-            </button>
+              <button
+                onClick={() => setActiveTab('detail')}
+                className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  activeTab === 'detail'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                }`}
+              >
+                <Zap className="w-4 h-4 shrink-0" />
+                <span className="truncate">3. PDF Receipts</span>
+              </button>
+            </div>
           </div>
 
           {/* Active Screenshot Presentation: Left Info Enters from Extreme Left (-140px), Right Image Enters from Extreme Right (+180px), Outgoing Fades & Scales Down (0.85) */}

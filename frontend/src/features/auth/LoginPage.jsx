@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, ArrowLeft, ShieldCheck, CheckCircle2, TrendingUp, UserPlus, Sparkles, KeyRound } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ArrowLeft, ShieldCheck, CheckCircle2, TrendingUp, UserPlus, Sparkles, KeyRound, X } from 'lucide-react';
 import { loginUser, clearAuthError } from './authSlice';
 
 const loginSchema = z.object({
@@ -16,6 +16,7 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, status, error } = useSelector((state) => state.auth);
+  const [showDemoBox, setShowDemoBox] = useState(true);
 
   const {
     register,
@@ -55,45 +56,52 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 via-indigo-500/10 to-emerald-500/10 blur-3xl opacity-70 pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* 2. Floating Demo Credentials Alert Box (DESKTOP VIEW ONLY: Top-Left Corner) */}
-      <div className="hidden lg:block fixed top-6 left-6 z-50 w-80 bg-white/95 backdrop-blur-2xl border border-blue-200/90 rounded-2xl p-4 shadow-2xl shadow-blue-500/10 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
-            <span className="text-xs font-bold text-blue-900 uppercase font-mono tracking-wider">
-              Recruiter Demo Account
-            </span>
-          </div>
-          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 border border-emerald-300 px-2 py-0.5 rounded-full">
-            Pre-Loaded Data
-          </span>
-        </div>
-
-        <p className="text-xs text-slate-600 leading-relaxed">
-          Evaluating InvoiceFlow? Use our pre-seeded demo account credentials:
-        </p>
-
-        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 text-xs font-mono space-y-1 text-slate-700">
+      {/* 2. Floating Demo Credentials Alert Box (DESKTOP VIEW ONLY: Top-Right Corner with X Close Button) */}
+      {showDemoBox && (
+        <div className="hidden lg:block fixed top-6 right-6 z-50 w-80 bg-white/95 backdrop-blur-2xl border border-blue-200/90 rounded-2xl p-4 shadow-2xl shadow-blue-500/10 space-y-3">
           <div className="flex items-center justify-between">
-            <span>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></span>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+              <span className="text-xs font-bold text-blue-900 uppercase font-mono tracking-wider">
+                Portfolio Demo Account
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowDemoBox(false)}
+              className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer outline-none"
+              aria-label="Close demo alert"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-          <div className="flex items-center justify-between">
-            <span>Password: <strong className="text-slate-900 font-bold">password123</strong></span>
+
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Evaluating InvoiceFlow? Pre-loaded with sample financial data:
+          </p>
+
+          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 text-xs font-mono space-y-1 text-slate-700">
+            <div className="flex items-center justify-between">
+              <span>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Password: <strong className="text-slate-900 font-bold">password123</strong></span>
+            </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => handleFillDemo(true)}
+            className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>One-Click Auto Login</span>
+          </button>
         </div>
+      )}
 
-        <button
-          type="button"
-          onClick={() => handleFillDemo(true)}
-          className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
-        >
-          <KeyRound className="w-3.5 h-3.5" />
-          <span>One-Click Auto Login</span>
-        </button>
-      </div>
-
-      {/* 3. Floating Ticker Badges around the Card (Desktop View Right Side) */}
-      <div className="hidden lg:block absolute right-12 xl:right-24 bottom-1/3 translate-y-1/2 z-20 animate-pulse">
+      {/* 3. Floating Ticker Badges around the Card (Desktop View Left Side) */}
+      <div className="hidden lg:block absolute left-12 xl:left-24 bottom-1/3 translate-y-1/2 z-20 animate-pulse">
         <div className="bg-white/90 backdrop-blur-md border border-slate-200/90 p-3.5 rounded-2xl shadow-xl flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center">
             <TrendingUp className="w-5 h-5" />
@@ -105,7 +113,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="hidden xl:block absolute right-32 top-1/4 z-20">
+      <div className="hidden xl:block absolute left-32 top-1/4 z-20">
         <div className="bg-white/90 backdrop-blur-md border border-slate-200/90 p-3 rounded-2xl shadow-lg flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center">
             <UserPlus className="w-4 h-4" />
@@ -235,14 +243,15 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            {/* MOBILE ONLY: Simple Clean Demo Account Note below Create Account line */}
+            {/* MOBILE ONLY: Simple Clean Demo Account Note */}
             <div className="block lg:hidden bg-blue-50/90 border border-blue-200/80 rounded-2xl p-3 text-left space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-blue-900 uppercase font-mono tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Portfolio Demo Credentials</span>
+                  <span>Portfolio Demo Account</span>
                 </span>
               </div>
+              <p className="text-[11px] text-slate-600">Pre-loaded with sample financial data:</p>
               <div className="text-[11px] font-mono text-slate-700 space-y-0.5">
                 <p>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></p>
                 <p>Password: <strong className="text-slate-900 font-bold">password123</strong></p>

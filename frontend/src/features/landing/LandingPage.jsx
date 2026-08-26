@@ -24,20 +24,8 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [direction, setDirection] = useState(1);
   const [activeFaq, setActiveFaq] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const tabKeys = ['dashboard', 'invoices', 'detail'];
-
-  const handleTabClick = (newTabKey) => {
-    const currentIndex = tabKeys.indexOf(activeTab);
-    const newIndex = tabKeys.indexOf(newTabKey);
-    if (newIndex !== currentIndex) {
-      setDirection(newIndex > currentIndex ? 1 : -1);
-      setActiveTab(newTabKey);
-    }
-  };
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -64,38 +52,13 @@ export default function LandingPage() {
     },
   };
 
+  // Left Info Text Variant: Enters from Extreme Left (-140px), Exits scaling down in place (scale 0.85)
   const showcaseTextVariants = {
-    enter: (dir) => ({
-      x: dir > 0 ? 80 : -80,
+    enter: {
+      x: -140,
       opacity: 0,
-      scale: 0.92,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.45,
-        ease: [0.25, 1, 0.5, 1],
-      },
+      scale: 0.9,
     },
-    exit: (dir) => ({
-      x: dir < 0 ? 80 : -80,
-      opacity: 0,
-      scale: 0.92,
-      transition: {
-        duration: 0.35,
-        ease: [0.25, 1, 0.5, 1],
-      },
-    }),
-  };
-
-  const showcaseImageVariants = {
-    enter: (dir) => ({
-      x: dir > 0 ? 150 : -150,
-      opacity: 0,
-      scale: 0.88,
-    }),
     center: {
       x: 0,
       opacity: 1,
@@ -105,15 +68,42 @@ export default function LandingPage() {
         ease: [0.25, 1, 0.5, 1],
       },
     },
-    exit: (dir) => ({
-      x: dir < 0 ? 150 : -150,
+    exit: {
+      x: 0,
       opacity: 0,
-      scale: 0.88,
+      scale: 0.85,
       transition: {
-        duration: 0.4,
+        duration: 0.35,
         ease: [0.25, 1, 0.5, 1],
       },
-    }),
+    },
+  };
+
+  // Right Screenshot Image Variant: Enters from Extreme Right (+180px), Exits scaling down in place (scale 0.85)
+  const showcaseImageVariants = {
+    enter: {
+      x: 180,
+      opacity: 0,
+      scale: 0.85,
+    },
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.55,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    },
+    exit: {
+      x: 0,
+      opacity: 0,
+      scale: 0.85,
+      transition: {
+        duration: 0.35,
+        ease: [0.25, 1, 0.5, 1],
+      },
+    },
   };
 
   const faqs = [
@@ -455,7 +445,7 @@ export default function LandingPage() {
           {/* Interactive Showcase Tabs */}
           <div className="flex justify-center gap-2 sm:gap-4 border-b border-slate-200 pb-4 overflow-x-auto">
             <button
-              onClick={() => handleTabClick('dashboard')}
+              onClick={() => setActiveTab('dashboard')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'dashboard'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -467,7 +457,7 @@ export default function LandingPage() {
             </button>
 
             <button
-              onClick={() => handleTabClick('invoices')}
+              onClick={() => setActiveTab('invoices')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'invoices'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -479,7 +469,7 @@ export default function LandingPage() {
             </button>
 
             <button
-              onClick={() => handleTabClick('detail')}
+              onClick={() => setActiveTab('detail')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                 activeTab === 'detail'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
@@ -491,14 +481,13 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Active Screenshot Presentation with Direction-Aware Framer Motion Animations */}
+          {/* Active Screenshot Presentation: Left Info Enters from Extreme Left (-140px), Right Image Enters from Extreme Right (+180px), Outgoing Fades & Scales Down (0.85) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4 min-h-[440px]">
             
-            {/* Screenshot Details (Left 4 Columns) */}
-            <AnimatePresence mode="wait" custom={direction}>
+            {/* Screenshot Details (Left 4 Columns) - Enters from Extreme Left */}
+            <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab + '-text'}
-                custom={direction}
                 variants={showcaseTextVariants}
                 initial="enter"
                 animate="center"
@@ -539,7 +528,7 @@ export default function LandingPage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Screenshot Display (Right 8 Columns) - Directional Scale Down + Extreme Left/Right Slide */}
+            {/* Screenshot Display (Right 8 Columns) - Enters from Extreme Right (+180px) */}
             <div className="lg:col-span-8 relative group [perspective:1400px]">
               
               {/* Ambient Soft Backlight Glow */}
@@ -549,10 +538,9 @@ export default function LandingPage() {
                 'bg-gradient-to-r from-emerald-600/30 via-teal-600/25 to-blue-600/25'
               }`} />
 
-              <AnimatePresence mode="wait" custom={direction}>
+              <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab + '-image'}
-                  custom={direction}
                   variants={showcaseImageVariants}
                   initial="enter"
                   animate="center"

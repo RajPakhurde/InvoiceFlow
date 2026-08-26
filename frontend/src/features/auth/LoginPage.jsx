@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, ShieldCheck, CheckCircle2, TrendingUp, UserPlus } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ShieldCheck, CheckCircle2, TrendingUp, UserPlus, Sparkles, KeyRound } from 'lucide-react';
 import { loginUser, clearAuthError } from './authSlice';
 
 const loginSchema = z.object({
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -37,6 +38,14 @@ export default function LoginPage() {
 
   const onSubmit = (data) => {
     dispatch(loginUser(data));
+  };
+
+  const handleFillDemo = (autoSubmit = false) => {
+    setValue('email', 'demo@invoiceflow.app', { shouldValidate: true });
+    setValue('password', 'password123', { shouldValidate: true });
+    if (autoSubmit) {
+      dispatch(loginUser({ email: 'demo@invoiceflow.app', password: 'password123' }));
+    }
   };
 
   return (
@@ -86,7 +95,7 @@ export default function LoginPage() {
       </div>
 
       {/* 3. Centered Elevated Glass Auth Card */}
-      <div className="max-w-md w-full relative z-10 space-y-6">
+      <div className="max-w-md w-full relative z-10 space-y-5">
         
         {/* Brand Header */}
         <div className="flex items-center justify-center gap-3">
@@ -100,9 +109,46 @@ export default function LoginPage() {
           </span>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-blue-500/10 space-y-6">
+        {/* Demo Account Recruiter Quick-Fill Banner Card */}
+        <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/80 to-blue-50/90 border border-blue-200/90 rounded-2xl p-4 shadow-sm space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+              <span className="text-xs font-bold text-blue-900 uppercase font-mono tracking-wider">
+                Recruiter / Portfolio Demo Login
+              </span>
+            </div>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 border border-emerald-300 px-2 py-0.5 rounded-full">
+              Pre-Loaded Data
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Want to evaluate InvoiceFlow immediately? Use our pre-seeded demo account:
+          </p>
+
+          <div className="bg-white/90 border border-blue-100 rounded-xl p-2.5 text-xs font-mono space-y-1 text-slate-700">
+            <div className="flex items-center justify-between">
+              <span>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Password: <strong className="text-slate-900 font-bold">password123</strong></span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleFillDemo(true)}
+            className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>One-Click Auto Login as Demo User</span>
+          </button>
+        </div>
+
+        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-blue-500/10 space-y-5">
           
-          <div className="text-center space-y-1.5">
+          <div className="text-center space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
               Welcome Back
             </h1>
@@ -187,7 +233,7 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-500">
+          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500">
             Don't have an account?{' '}
             <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
               Create account

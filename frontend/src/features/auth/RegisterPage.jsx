@@ -4,13 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, ArrowRight, ShieldCheck, CheckCircle2, TrendingUp, UserPlus } from 'lucide-react';
+import { User, Mail, Lock, Building, ArrowRight, ArrowLeft, ShieldCheck, CheckCircle2, TrendingUp, UserPlus } from 'lucide-react';
 import { registerUser, clearAuthError } from './authSlice';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  companyName: z.string().optional(),
 });
 
 export default function RegisterPage() {
@@ -55,12 +56,12 @@ export default function RegisterPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold font-mono text-slate-900">INV-0015 Paid</span>
+              <span className="text-xs font-bold font-mono text-slate-900 font-display">Free 14-Day Trial</span>
               <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                Cleared
+                Unlocked
               </span>
             </div>
-            <p className="text-xs font-mono font-semibold text-emerald-600">$3,410.00 received</p>
+            <p className="text-xs font-mono font-semibold text-emerald-600">No credit card required</p>
           </div>
         </div>
       </div>
@@ -87,28 +88,39 @@ export default function RegisterPage() {
       </div>
 
       {/* 3. Centered Elevated Glass Auth Card */}
-      <div className="max-w-md w-full relative z-10 space-y-6">
+      <div className="max-w-md w-full relative z-10 space-y-4">
         
+        {/* Top Back to Home Button */}
+        <div className="flex items-center justify-between px-1">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors group cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-slate-500 group-hover:text-blue-600" />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+
         {/* Brand Header */}
-        <div className="flex items-center justify-center gap-3">
+        <Link to="/" className="flex items-center justify-center gap-3 group pt-1">
           <img
             src="/invoiceflow_logo.jpg"
             alt="InvoiceFlow Logo"
-            className="w-10 h-10 rounded-2xl object-cover border border-slate-200/80 shadow-md"
+            className="w-10 h-10 rounded-2xl object-cover border border-slate-200/80 shadow-md group-hover:scale-105 transition-transform"
           />
           <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-display">
             Invoice<span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Flow</span>
           </span>
-        </div>
+        </Link>
 
-        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-blue-500/10 space-y-6">
+        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-blue-500/10 space-y-5">
           
-          <div className="text-center space-y-1.5">
+          <div className="text-center space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
-              Create Your Account
+              Create Account
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm">
-              Get started with smart invoicing & business finance management
+              Start managing invoices and clients with a free account
             </p>
           </div>
 
@@ -118,11 +130,11 @@ export default function RegisterPage() {
               <svg className="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{typeof error === 'string' ? error : 'Registration failed. Email may already be in use.'}</span>
+              <span>{typeof error === 'string' ? error : 'Registration failed. Please try again.'}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
             
             {/* Full Name Field */}
             <div>
@@ -143,7 +155,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Email Address */}
+            {/* Email Address Field */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
                 Email Address
@@ -152,7 +164,7 @@ export default function RegisterPage() {
                 <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
-                  placeholder="name@company.com"
+                  placeholder="john@company.com"
                   {...register('email')}
                   className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50/80 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all font-medium"
                 />
@@ -162,7 +174,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Password */}
+            {/* Password Field */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
                 Password
@@ -171,7 +183,7 @@ export default function RegisterPage() {
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Minimum 6 characters"
                   {...register('password')}
                   className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50/80 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all font-medium"
                 />
@@ -179,6 +191,25 @@ export default function RegisterPage() {
               {errors.password && (
                 <p className="mt-1 text-xs text-rose-600 font-medium">{errors.password.message}</p>
               )}
+            </div>
+
+            {/* Company Name (Optional) */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                  Company Name
+                </label>
+                <span className="text-[10px] text-slate-400 font-medium">(Optional)</span>
+              </div>
+              <div className="relative">
+                <Building className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Acme Corp"
+                  {...register('companyName')}
+                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50/80 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all font-medium"
+                />
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -205,10 +236,10 @@ export default function RegisterPage() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-500">
+          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500">
             Already have an account?{' '}
             <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-              Sign in
+              Sign In
             </Link>
           </div>
 
@@ -221,6 +252,7 @@ export default function RegisterPage() {
         </div>
 
       </div>
+
     </div>
   );
 }

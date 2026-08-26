@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, ShieldCheck, CheckCircle2, TrendingUp, UserPlus, Sparkles, KeyRound } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ArrowLeft, ShieldCheck, CheckCircle2, TrendingUp, UserPlus, Sparkles, KeyRound } from 'lucide-react';
 import { loginUser, clearAuthError } from './authSlice';
 
 const loginSchema = z.object({
@@ -95,19 +95,30 @@ export default function LoginPage() {
       </div>
 
       {/* 3. Centered Elevated Glass Auth Card */}
-      <div className="max-w-md w-full relative z-10 space-y-5">
+      <div className="max-w-md w-full relative z-10 space-y-4">
         
+        {/* Top Back to Home Button */}
+        <div className="flex items-center justify-between px-1">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors group cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-slate-500 group-hover:text-blue-600" />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+
         {/* Brand Header */}
-        <div className="flex items-center justify-center gap-3">
+        <Link to="/" className="flex items-center justify-center gap-3 group pt-1">
           <img
             src="/invoiceflow_logo.jpg"
             alt="InvoiceFlow Logo"
-            className="w-10 h-10 rounded-2xl object-cover border border-slate-200/80 shadow-md"
+            className="w-10 h-10 rounded-2xl object-cover border border-slate-200/80 shadow-md group-hover:scale-105 transition-transform"
           />
           <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-display">
             Invoice<span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Flow</span>
           </span>
-        </div>
+        </Link>
 
         {/* Demo Account Recruiter Quick-Fill Banner Card */}
         <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/80 to-blue-50/90 border border-blue-200/90 rounded-2xl p-4 shadow-sm space-y-2.5">

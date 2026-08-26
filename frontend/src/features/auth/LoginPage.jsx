@@ -125,17 +125,6 @@ export default function LoginPage() {
       {/* 4. Centered Elevated Glass Auth Card */}
       <div className="max-w-md w-full relative z-10 space-y-4">
         
-        {/* Top Back to Home Button */}
-        <div className="flex items-center justify-between px-1">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors group cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-slate-500 group-hover:text-blue-600" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
-
         {/* Brand Header */}
         <Link to="/" className="flex items-center justify-center gap-3 group pt-1">
           <img
@@ -148,9 +137,20 @@ export default function LoginPage() {
           </span>
         </Link>
 
-        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-blue-500/10 space-y-5">
+        {/* Main Form White Glass Card */}
+        <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-blue-500/10 space-y-5 relative">
           
-          <div className="text-center space-y-1">
+          {/* Arrow-Only Back Icon in Upper-Left Corner of Form */}
+          <Link
+            to="/"
+            className="absolute top-5 left-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer group"
+            title="Back to Home"
+            aria-label="Back to Home"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+          </Link>
+
+          <div className="text-center space-y-1 pt-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
               Welcome Back
             </h1>

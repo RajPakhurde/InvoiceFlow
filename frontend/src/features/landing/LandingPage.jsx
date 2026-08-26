@@ -105,7 +105,7 @@ export default function LandingPage() {
             <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
           </nav>
 
-          {/* Desktop CTA Buttons (Hidden on Mobile) */}
+          {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <Link
@@ -125,7 +125,7 @@ export default function LandingPage() {
                 </Link>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                   <Link
-                    to="/register"
+                    to="/login"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
                   >
                     <span>Get Started Free</span>
@@ -204,7 +204,7 @@ export default function LandingPage() {
                 ) : (
                   <>
                     <Link
-                      to="/register"
+                      to="/login"
                       onClick={() => setMobileMenuOpen(false)}
                       className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
                     >
@@ -275,7 +275,7 @@ export default function LandingPage() {
           >
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
               <Link
-                to="/register"
+                to="/login"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
               >
                 <span>Start Free Trial Today</span>
@@ -315,7 +315,7 @@ export default function LandingPage() {
             </span>
           </motion.div>
 
-          {/* Main Hero App Screenshot Frame (macOS Window Style with Floating Framer Motion Physics) */}
+          {/* Main Hero App Screenshot Frame */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -427,7 +427,7 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Active Screenshot Presentation with Framer Motion AnimatePresence */}
+          {/* Active Screenshot Presentation */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
             
             {/* Screenshot Details (Left 4 Columns) */}
@@ -464,7 +464,7 @@ export default function LandingPage() {
 
                 <div className="pt-4">
                   <Link
-                    to="/register"
+                    to="/login"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition-colors cursor-pointer"
                   >
                     <span>Try this feature now</span>
@@ -474,7 +474,7 @@ export default function LandingPage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Screenshot Display (Right 8 Columns) - Linear.app Style 3D Blended UI (Zero Borders) */}
+            {/* Screenshot Display (Right 8 Columns) */}
             <div className="lg:col-span-8 relative group [perspective:1400px]">
               
               {/* Ambient Soft Backlight Glow */}
@@ -718,7 +718,7 @@ export default function LandingPage() {
               </div>
 
               <Link
-                to="/register"
+                to="/login"
                 className="w-full py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-900 font-bold text-xs text-center transition-colors cursor-pointer"
               >
                 Get Started Free
@@ -766,7 +766,7 @@ export default function LandingPage() {
               </div>
 
               <Link
-                to="/register"
+                to="/login"
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs text-center shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
               >
                 Start 14-Day Free Trial
@@ -806,7 +806,7 @@ export default function LandingPage() {
               </div>
 
               <Link
-                to="/register"
+                to="/login"
                 className="w-full py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-900 font-bold text-xs text-center transition-colors cursor-pointer"
               >
                 Contact Sales
@@ -907,7 +907,7 @@ export default function LandingPage() {
           <div className="pt-2">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                to="/register"
+                to="/login"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
               >
                 <span>Get Started Free Today</span>

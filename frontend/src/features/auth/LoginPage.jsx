@@ -55,24 +55,44 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 via-indigo-500/10 to-emerald-500/10 blur-3xl opacity-70 pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* 2. Floating Ticker Badges around the Card (Desktop View) */}
-      <div className="hidden lg:block absolute left-12 xl:left-24 top-1/3 -translate-y-1/2 z-20 animate-pulse">
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200/90 p-3.5 rounded-2xl shadow-xl flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5" />
+      {/* 2. Floating Demo Credentials Alert Box (DESKTOP VIEW ONLY: Top-Left Corner) */}
+      <div className="hidden lg:block fixed top-6 left-6 z-50 w-80 bg-white/95 backdrop-blur-2xl border border-blue-200/90 rounded-2xl p-4 shadow-2xl shadow-blue-500/10 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+            <span className="text-xs font-bold text-blue-900 uppercase font-mono tracking-wider">
+              Recruiter Demo Account
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold font-mono text-slate-900">INV-0015 Paid</span>
-              <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                Cleared
-              </span>
-            </div>
-            <p className="text-xs font-mono font-semibold text-emerald-600">$3,410.00 received</p>
+          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 border border-emerald-300 px-2 py-0.5 rounded-full">
+            Pre-Loaded Data
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-600 leading-relaxed">
+          Evaluating InvoiceFlow? Use our pre-seeded demo account credentials:
+        </p>
+
+        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 text-xs font-mono space-y-1 text-slate-700">
+          <div className="flex items-center justify-between">
+            <span>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Password: <strong className="text-slate-900 font-bold">password123</strong></span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => handleFillDemo(true)}
+          className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <KeyRound className="w-3.5 h-3.5" />
+          <span>One-Click Auto Login</span>
+        </button>
       </div>
 
+      {/* 3. Floating Ticker Badges around the Card (Desktop View Right Side) */}
       <div className="hidden lg:block absolute right-12 xl:right-24 bottom-1/3 translate-y-1/2 z-20 animate-pulse">
         <div className="bg-white/90 backdrop-blur-md border border-slate-200/90 p-3.5 rounded-2xl shadow-xl flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center">
@@ -90,11 +110,11 @@ export default function LoginPage() {
           <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center">
             <UserPlus className="w-4 h-4" />
           </div>
-          <span className="text-xs font-semibold text-slate-800">New Client Onboarded</span>
+          <span className="text-xs font-semibold text-slate-800">Quick 2-Min Setup</span>
         </div>
       </div>
 
-      {/* 3. Centered Elevated Glass Auth Card */}
+      {/* 4. Centered Elevated Glass Auth Card */}
       <div className="max-w-md w-full relative z-10 space-y-4">
         
         {/* Top Back to Home Button */}
@@ -119,43 +139,6 @@ export default function LoginPage() {
             Invoice<span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Flow</span>
           </span>
         </Link>
-
-        {/* Demo Account Recruiter Quick-Fill Banner Card */}
-        <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/80 to-blue-50/90 border border-blue-200/90 rounded-2xl p-4 shadow-sm space-y-2.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
-              <span className="text-xs font-bold text-blue-900 uppercase font-mono tracking-wider">
-                Recruiter / Portfolio Demo Login
-              </span>
-            </div>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 border border-emerald-300 px-2 py-0.5 rounded-full">
-              Pre-Loaded Data
-            </span>
-          </div>
-
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Want to evaluate InvoiceFlow immediately? Use our pre-seeded demo account:
-          </p>
-
-          <div className="bg-white/90 border border-blue-100 rounded-xl p-2.5 text-xs font-mono space-y-1 text-slate-700">
-            <div className="flex items-center justify-between">
-              <span>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Password: <strong className="text-slate-900 font-bold">password123</strong></span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => handleFillDemo(true)}
-            className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
-          >
-            <KeyRound className="w-3.5 h-3.5" />
-            <span>One-Click Auto Login as Demo User</span>
-          </button>
-        </div>
 
         <div className="bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-blue-500/10 space-y-5">
           
@@ -244,11 +227,36 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-              Create account
-            </Link>
+          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500 space-y-3">
+            <div>
+              Don't have an account?{' '}
+              <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                Create account
+              </Link>
+            </div>
+
+            {/* MOBILE ONLY: Simple Clean Demo Account Note below Create Account line */}
+            <div className="block lg:hidden bg-blue-50/90 border border-blue-200/80 rounded-2xl p-3 text-left space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-blue-900 uppercase font-mono tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Portfolio Demo Credentials</span>
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-slate-700 space-y-0.5">
+                <p>Email: <strong className="text-slate-900 font-bold">demo@invoiceflow.app</strong></p>
+                <p>Password: <strong className="text-slate-900 font-bold">password123</strong></p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleFillDemo(true)}
+                className="w-full py-2 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Auto Fill & Login</span>
+              </button>
+            </div>
+
           </div>
 
         </div>

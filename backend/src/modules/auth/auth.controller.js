@@ -26,6 +26,7 @@ export const registerController = async (req, res, next) => {
     const clientDetails = getClientDetails(req);
     await createAuditLog({
       userId: user.id,
+      email: user.email,
       action: 'LOGIN',
       ...clientDetails,
     });
@@ -45,6 +46,7 @@ export const loginController = async (req, res, next) => {
     const clientDetails = getClientDetails(req);
     await createAuditLog({
       userId: user.id,
+      email: user.email,
       action: 'LOGIN',
       ...clientDetails,
     });
@@ -67,27 +69,40 @@ export const refreshController = async (req, res, next) => {
 
 export const logoutController = async (req, res) => {
   try {
-    // Attempt to identify user for audit log via Bearer Token or Cookie
     let userId = req.user?.id;
+    let email = req.user?.email;
 
     if (!userId) {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const token = authHeader.split(' ')[1];
         const decoded = verifyAccessToken(token);
-        if (decoded) userId = decoded.id;
+        if (decoded) {
+          userId = decoded.id;
+          email = decoded.email;
+        }
       }
     }
 
     if (!userId && req.cookies?.refreshToken) {
       const decodedRefresh = verifyRefreshToken(req.cookies.refreshToken);
-      if (decodedRefresh) userId = decodedRefresh.id;
+      if (decodedRefresh) {
+        userId = decodedRefresh.id;
+      }
+    }
+
+    if (userId && !email) {
+      try {
+        const u = await authService.getCurrentUser(userId);
+        if (u) email = u.email;
+      } catch (e) {}
     }
 
     if (userId) {
       const clientDetails = getClientDetails(req);
       await createAuditLog({
         userId,
+        email: email || null,
         action: 'LOGOUT',
         ...clientDetails,
       });

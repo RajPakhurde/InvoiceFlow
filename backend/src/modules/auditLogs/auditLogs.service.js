@@ -1,15 +1,16 @@
 import { prisma } from '../../config/db.js';
 
 /**
- * Record a login/logout audit log entry
+ * Record a login/logout audit log entry with email address
  */
-export const createAuditLog = async ({ userId, action, ipAddress, userAgent }) => {
+export const createAuditLog = async ({ userId, email, action, ipAddress, userAgent }) => {
   if (!userId) return null;
 
   try {
     const log = await prisma.auditLog.create({
       data: {
         userId,
+        email: email || null,
         action,
         ipAddress: ipAddress || null,
         userAgent: userAgent || null,
@@ -38,6 +39,7 @@ export const getUserAuditLogs = async (userId, { page = 1, limit = 15 }) => {
       take: limitNum,
       select: {
         id: true,
+        email: true,
         action: true,
         ipAddress: true,
         userAgent: true,

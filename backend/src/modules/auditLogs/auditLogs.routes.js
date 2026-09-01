@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { getAuditLogsController } from './auditLogs.controller.js';
-import { authenticateToken } from '../../middleware/auth.middleware.js';
+import { authMiddleware } from '../../middleware/auth.js';
 
 const router = Router();
 
-router.use(authenticateToken);
+router.use(authMiddleware);
 router.get('/', getAuditLogsController);
 
 export default router;

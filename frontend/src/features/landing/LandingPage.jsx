@@ -18,6 +18,8 @@ import {
   Lock,
   Menu,
   X,
+  Star,
+  Quote,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -30,6 +32,41 @@ export default function LandingPage() {
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
   };
+
+  const testimonials = [
+    {
+      name: 'Sarah Jenkins',
+      role: 'Founder, Apex Digital Agency',
+      quote: 'InvoiceFlow completely transformed our billing workflow. Being able to generate instant PDF receipts and track paid vs overdue invoices at a glance has saved us 10+ hours every month.',
+      rating: 5,
+      avatarBg: 'from-blue-600 to-indigo-600',
+      initials: 'SJ',
+    },
+    {
+      name: 'David Chen',
+      role: 'Senior Full-Stack Freelancer',
+      quote: 'The user interface is insanely clean and fast. Adding client tax IDs and managing expense categories takes seconds. I recommend InvoiceFlow to every independent contractor I know.',
+      rating: 5,
+      avatarBg: 'from-indigo-600 to-purple-600',
+      initials: 'DC',
+    },
+    {
+      name: 'Elena Rostova',
+      role: 'Co-Founder, CloudMetrics SaaS',
+      quote: 'Having built-in security audit logs and real-time revenue analytics in one platform is a game changer for our finance team. The PDF downloads are pixel-perfect!',
+      rating: 5,
+      avatarBg: 'from-emerald-600 to-teal-600',
+      initials: 'ER',
+    },
+    {
+      name: 'Marcus Vance',
+      role: 'Creative Director, Vance Design Co.',
+      quote: 'Managing invoice payment lifecycles used to be a headache. Now our clients pay faster, and the automated status tracking keeps our cash flow completely predictable.',
+      rating: 5,
+      avatarBg: 'from-amber-600 to-orange-600',
+      initials: 'MV',
+    },
+  ];
 
   const screenshots = {
     dashboard: {
@@ -155,7 +192,7 @@ export default function LandingPage() {
           <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <a href="#showcase" className="hover:text-blue-600 transition-colors">Showcase</a>
             <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
-            <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
+            <a href="#testimonials" className="hover:text-blue-600 transition-colors">Reviews</a>
             <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
           </nav>
 
@@ -230,11 +267,11 @@ export default function LandingPage() {
                   Features
                 </a>
                 <a
-                  href="#pricing"
+                  href="#testimonials"
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
                 >
-                  Pricing
+                  Reviews
                 </a>
                 <a
                   href="#faq"
@@ -723,166 +760,83 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white border-t border-slate-200/80 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-white border-t border-slate-200/80 relative overflow-hidden">
+        
+        {/* Background Ambient Mesh Orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
           
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-center space-y-3 max-w-3xl mx-auto"
+            className="text-center space-y-4 max-w-3xl mx-auto"
           >
             {/* Eyebrow Header with Faded Center-Thick Line */}
             <div className="inline-flex flex-col items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-600">
-                TRANSPARENT PRICING
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600 flex items-center justify-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                USER REVIEWS & TESTIMONIALS
               </span>
-              <div className="relative w-48 sm:w-56 h-1 mt-2.5">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500 to-transparent blur-xs opacity-80" />
-                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-600 to-transparent" />
+              <div className="relative w-56 sm:w-72 h-1 mt-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500 to-transparent blur-xs opacity-80" />
+                <div className="relative w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
               </div>
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
-              Simple plans for businesses of all sizes.
+              Loved by Founders, Agencies, & Freelancers Worldwide.
             </h2>
             <p className="text-slate-600 text-base sm:text-lg">
-              No hidden fees. Start free and scale as your transaction volume grows.
+              Discover how InvoiceFlow helps thousands of professionals save hours on billing, automate receipts, and track financial growth.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            
-            {/* Starter Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              transition={{ duration: 0.4 }}
-              className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900 font-display">Starter</h3>
-                <p className="text-slate-500 text-xs">For freelancers & solo creators</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold font-mono text-slate-900">$0</span>
-                  <span className="text-slate-500 text-xs">/ forever free</span>
-                </div>
-                <ul className="space-y-3 text-xs font-semibold text-slate-700 pt-4 border-t border-slate-200">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Up to 10 Invoices / Month</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Client Directory Storage</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Expense Logging</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                to="/login"
-                className="w-full py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-900 font-bold text-xs text-center transition-colors cursor-pointer"
+          {/* Testimonials Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {testimonials.map((t, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:border-blue-300 transition-all flex flex-col justify-between space-y-6 relative"
               >
-                Get Started Free
-              </Link>
-            </motion.div>
+                <div className="space-y-4">
+                  {/* Star Rating & Quote Icon */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-amber-400">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <Quote className="w-6 h-6 text-slate-300/80" />
+                  </div>
 
-            {/* Pro Plan (Featured) */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-              className="bg-slate-950 border-2 border-blue-600 p-8 rounded-3xl space-y-6 flex flex-col justify-between text-white relative shadow-2xl"
-            >
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[10px] uppercase font-bold tracking-wider rounded-full shadow-md">
-                MOST POPULAR
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white font-display">Pro Business</h3>
-                <p className="text-slate-400 text-xs">For growing agencies & teams</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold font-mono text-white">$19</span>
-                  <span className="text-slate-400 text-xs">/ per month</span>
+                  {/* Quote Body */}
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal italic">
+                    "{t.quote}"
+                  </p>
                 </div>
-                <ul className="space-y-3 text-xs font-semibold text-slate-300 pt-4 border-t border-slate-800">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
-                    <span>Unlimited Invoices & Receipts</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
-                    <span>Instant PDF Downloads & Email Delivery</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
-                    <span>Executive Analytics & Donut Charts</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
-                    <span>Server-Side Paginated Tables</span>
-                  </li>
-                </ul>
-              </div>
 
-              <Link
-                to="/login"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs text-center shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
-              >
-                Start 14-Day Free Trial
-              </Link>
-            </motion.div>
-
-            {/* Enterprise Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="bg-slate-50/80 border border-slate-200 p-8 rounded-3xl space-y-6 flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900 font-display">Enterprise</h3>
-                <p className="text-slate-500 text-xs">For large organizations</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold font-mono text-slate-900">$49</span>
-                  <span className="text-slate-500 text-xs">/ per month</span>
+                {/* Author Info */}
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                  <div className={`w-10 h-10 rounded-2xl bg-gradient-to-tr ${t.avatarBg} text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0 font-display`}>
+                    {t.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold text-slate-900 truncate">{t.name}</h4>
+                    <p className="text-[11px] font-medium text-slate-500 truncate">{t.role}</p>
+                  </div>
                 </div>
-                <ul className="space-y-3 text-xs font-semibold text-slate-700 pt-4 border-t border-slate-200">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Everything in Pro Plan</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Custom Brand PDF Templates</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Dedicated 24/7 Priority Support</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                to="/login"
-                className="w-full py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-900 font-bold text-xs text-center transition-colors cursor-pointer"
-              >
-                Contact Sales
-              </Link>
-            </motion.div>
-
+              </motion.div>
+            ))}
           </div>
 
         </div>
@@ -1004,7 +958,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-6 font-semibold">
             <a href="#showcase" className="hover:text-slate-900 transition-colors">Showcase</a>
             <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
-            <a href="#pricing" className="hover:text-slate-900 transition-colors">Pricing</a>
+            <a href="#testimonials" className="hover:text-slate-900 transition-colors">Reviews</a>
             <Link to="/login" className="hover:text-slate-900 transition-colors">Sign In</Link>
           </div>
         </div>

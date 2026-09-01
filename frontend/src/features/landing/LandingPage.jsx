@@ -800,8 +800,8 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Testimonials Container (Mobile Touch Swipeable Carousel / Desktop Grid) */}
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto md:overflow-visible pb-6 md:pb-0 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 sm:mx-0 sm:px-0">
             {testimonials.map((t, idx) => (
               <motion.div
                 key={idx}
@@ -810,7 +810,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 whileHover={{ y: -6 }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:border-blue-300 transition-all flex flex-col justify-between space-y-6 relative"
+                className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:border-blue-300 transition-all flex flex-col justify-between space-y-6 relative min-w-[85%] sm:min-w-[70%] md:min-w-0 snap-center shrink-0"
               >
                 <div className="space-y-4">
                   {/* Star Rating & Quote Icon */}
@@ -841,6 +841,12 @@ export default function LandingPage() {
                 </div>
               </motion.div>
             ))}
+          </div>
+
+          {/* Mobile Swipe Hint Badge */}
+          <div className="flex md:hidden items-center justify-center gap-1.5 text-xs font-medium text-slate-400">
+            <span>Swipe cards to explore reviews</span>
+            <ArrowRight className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
           </div>
 
         </div>

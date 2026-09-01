@@ -11,6 +11,7 @@ import InvoicesListPage from '../features/invoices/InvoicesListPage';
 import InvoiceFormPage from '../features/invoices/InvoiceFormPage';
 import InvoiceDetailPage from '../features/invoices/InvoiceDetailPage';
 import ExpensesListPage from '../features/expenses/ExpensesListPage';
+import NotFoundPage from '../components/NotFoundPage';
 
 const ProtectedLayout = () => (
   <div className="min-h-screen flex flex-col">
@@ -46,7 +47,8 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Catch-all 404 Route */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

@@ -325,27 +325,41 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
+            className="flex flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-4 pt-2"
           >
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                to="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
-              >
-                <span>Start Free Trial Today</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </motion.div>
+            {isAuthenticated ? (
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
+                >
+                  <span>Go to Executive Dashboard</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Link>
+              </motion.div>
+            ) : (
+              <>
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} className="shrink-0">
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center gap-1.5 sm:gap-2.5 px-3.5 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-base shadow-lg shadow-blue-500/20 transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <span>Start Free Trial</span>
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                  </Link>
+                </motion.div>
 
-            <motion.a
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              href="#showcase"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-base shadow-xs transition-colors cursor-pointer"
-            >
-              <BarChart3 className="w-5 h-5 text-blue-600" />
-              <span>Explore Live Showcase</span>
-            </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  href="#showcase"
+                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-7 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs sm:text-base shadow-xs transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  <BarChart3 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-blue-600" />
+                  <span>Explore Showcase</span>
+                </motion.a>
+              </>
+            )}
           </motion.div>
 
           {/* Security & Feature Micro-Bullets */}
@@ -963,10 +977,10 @@ export default function LandingPage() {
           <div className="pt-2">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                to="/login"
+                to={isAuthenticated ? "/dashboard" : "/login"}
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
               >
-                <span>Get Started Free Today</span>
+                <span>{isAuthenticated ? "Go to Executive Dashboard" : "Get Started Free Today"}</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>

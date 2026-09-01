@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown, LogOut, Loader2 } from 'lucide-react';
 import { logoutUser } from '../features/auth/authSlice';
 
 export default function Navbar() {
@@ -11,10 +11,16 @@ export default function Navbar() {
   const { user } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    await dispatch(logoutUser());
-    navigate('/login');
+    setIsLoggingOut(true);
+    try {
+      await dispatch(logoutUser());
+    } finally {
+      setIsLoggingOut(false);
+      navigate('/login');
+    }
   };
 
   const navLinks = [
@@ -89,10 +95,20 @@ export default function Navbar() {
                     <div className="bg-white border border-slate-200/90 rounded-2xl shadow-xl p-1.5">
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors outline-none cursor-pointer"
+                        disabled={isLoggingOut}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors outline-none cursor-pointer disabled:opacity-60"
                       >
-                        <LogOut className="w-3.5 h-3.5 text-rose-600" />
-                        <span>Logout</span>
+                        {isLoggingOut ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-600 shrink-0" />
+                            <span>Logging out...</span>
+                          </>
+                        ) : (
+                          <>
+                            <LogOut className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                            <span>Logout</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -159,10 +175,20 @@ export default function Navbar() {
 
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition-colors border border-rose-200 outline-none cursor-pointer"
+                disabled={isLoggingOut}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition-colors border border-rose-200 outline-none cursor-pointer disabled:opacity-60"
               >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
+                {isLoggingOut ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-600 shrink-0" />
+                    <span>Logging out...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut className="w-3.5 h-3.5 shrink-0" />
+                    <span>Logout</span>
+                  </>
+                )}
               </button>
             </div>
           )}

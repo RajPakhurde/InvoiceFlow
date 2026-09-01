@@ -1,7 +1,23 @@
 import { prisma } from '../../config/db.js';
 import { generateInvoiceNumber } from '../../utils/invoiceNumber.js';
 
+export const updateOverdueInvoices = async (userId) => {
+  const now = new Date();
+  await prisma.invoice.updateMany({
+    where: {
+      userId,
+      status: { in: ['sent', 'draft'] },
+      dueDate: { lt: now },
+    },
+    data: {
+      status: 'overdue',
+    },
+  });
+};
+
 export const getInvoices = async (userId, { status, clientId, page = 1, limit = 20 }) => {
+  await updateOverdueInvoices(userId);
+
   const pageNum = Math.max(1, parseInt(page, 10) || 1);
   const limitNum = Math.max(1, parseInt(limit, 10) || 20);
   const skip = (pageNum - 1) * limitNum;
@@ -69,6 +85,8 @@ export const getInvoices = async (userId, { status, clientId, page = 1, limit = 
 };
 
 export const getInvoiceById = async (userId, invoiceId) => {
+  await updateOverdueInvoices(userId);
+
   const invoice = await prisma.invoice.findFirst({
     where: {
       id: invoiceId,

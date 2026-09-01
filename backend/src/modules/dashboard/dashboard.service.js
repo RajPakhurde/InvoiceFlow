@@ -1,6 +1,9 @@
 import { prisma } from '../../config/db.js';
+import { updateOverdueInvoices } from '../invoices/invoices.service.js';
 
 export const getSummary = async (userId) => {
+  await updateOverdueInvoices(userId);
+
   const [outstandingAgg, paidAgg, expensesAgg, countsGroup] = await Promise.all([
     prisma.invoice.aggregate({
       _sum: { total: true },

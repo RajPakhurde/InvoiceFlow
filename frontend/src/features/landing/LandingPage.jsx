@@ -145,20 +145,24 @@ export default function LandingPage() {
 
   const faqs = [
     {
-      q: 'How does InvoiceFlow handle tax calculations and PDF generation?',
-      a: 'InvoiceFlow automatically calculates subtotal, tax amounts, and grand totals based on customizable tax rates. You can generate and download pixel-perfect PDF receipts with one click.',
+      q: 'How does InvoiceFlow calculate tax and generate PDF receipts?',
+      a: 'InvoiceFlow automatically computes line item subtotals, customizable tax percentages, and totals. You can generate and download pixel-perfect vector PDF receipts instantly with one click.',
     },
     {
       q: 'Can I track business expenses alongside client invoices?',
-      a: 'Yes! InvoiceFlow includes a full Expense Tracker module allowing you to record expenditures, assign operational categories, and monitor net profit margins.',
+      a: 'Yes! InvoiceFlow includes a full Expense Tracker module allowing you to record expenditures, assign operational categories, and monitor net profit margins in real-time.',
     },
     {
-      q: 'Is my financial data secure?',
-      a: 'Absolutely. All user data is protected by industry-standard JWT authentication and 256-bit encrypted SSL database connections.',
+      q: 'Is my financial data secure and audited?',
+      a: 'Absolutely. All user sessions are protected by dual JWT token authentication, HTTP-Only cookies, 256-bit encrypted SSL database connections, and database security audit logging.',
     },
     {
-      q: 'Can I upgrade or downgrade my plan at any time?',
-      a: 'Yes, you can change your subscription tier anytime from your account settings with zero hassle.',
+      q: 'How do I test InvoiceFlow as a reviewer or recruiter?',
+      a: 'You can use the pre-seeded demo account (demo@invoiceflow.app / password123) or click the "1-Click Demo Login" button on the sign-in page to instantly explore all dashboard analytics, client directories, and invoices.',
+    },
+    {
+      q: 'What happens when an invoice due date passes?',
+      a: 'Unpaid invoices automatically evaluate and update to "Overdue" status as soon as their due date passes, keeping your executive dashboard and cash flow metrics accurate.',
     },
   ];
 

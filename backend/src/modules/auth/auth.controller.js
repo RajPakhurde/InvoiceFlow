@@ -1,4 +1,6 @@
 import * as authService from './auth.service.js';
+import { createAuditLog } from '../auditLogs/auditLogs.service.js';
+import { verifyAccessToken, verifyRefreshToken } from '../../utils/jwt.js';
 
 const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
@@ -9,10 +11,25 @@ const COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
+const getClientDetails = (req) => {
+  const ipAddress = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || req.socket?.remoteAddress;
+  const userAgent = req.headers['user-agent'];
+  return { ipAddress, userAgent };
+};
+
 export const registerController = async (req, res, next) => {
   try {
     const { user, accessToken, refreshToken } = await authService.register(req.body);
     res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+
+    // Record LOGIN audit log on registration
+    const clientDetails = getClientDetails(req);
+    await createAuditLog({
+      userId: user.id,
+      action: 'LOGIN',
+      ...clientDetails,
+    });
+
     res.status(201).json({ user, accessToken });
   } catch (error) {
     next(error);
@@ -23,6 +40,15 @@ export const loginController = async (req, res, next) => {
   try {
     const { user, accessToken, refreshToken } = await authService.login(req.body);
     res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+
+    // Record LOGIN audit log
+    const clientDetails = getClientDetails(req);
+    await createAuditLog({
+      userId: user.id,
+      action: 'LOGIN',
+      ...clientDetails,
+    });
+
     res.status(200).json({ user, accessToken });
   } catch (error) {
     next(error);
@@ -39,7 +65,37 @@ export const refreshController = async (req, res, next) => {
   }
 };
 
-export const logoutController = (req, res) => {
+export const logoutController = async (req, res) => {
+  try {
+    // Attempt to identify user for audit log via Bearer Token or Cookie
+    let userId = req.user?.id;
+
+    if (!userId) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        const decoded = verifyAccessToken(token);
+        if (decoded) userId = decoded.id;
+      }
+    }
+
+    if (!userId && req.cookies?.refreshToken) {
+      const decodedRefresh = verifyRefreshToken(req.cookies.refreshToken);
+      if (decodedRefresh) userId = decodedRefresh.id;
+    }
+
+    if (userId) {
+      const clientDetails = getClientDetails(req);
+      await createAuditLog({
+        userId,
+        action: 'LOGOUT',
+        ...clientDetails,
+      });
+    }
+  } catch (err) {
+    console.error('Audit log logout recording error:', err.message);
+  }
+
   res.clearCookie('refreshToken', COOKIE_OPTIONS);
   res.status(200).json({ message: 'Logged out' });
 };

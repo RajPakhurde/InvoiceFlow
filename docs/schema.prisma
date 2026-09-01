@@ -36,6 +36,7 @@ model User {
   clients  Client[]
   invoices Invoice[]
   expenses Expense[]
+  auditLogs AuditLog[]
 
   @@map("users")
 }
@@ -117,3 +118,19 @@ model Expense {
   @@index([category])
   @@map("expenses")
 }
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String   // "LOGIN" | "LOGOUT" | "REGISTER"
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+

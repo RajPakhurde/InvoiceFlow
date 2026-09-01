@@ -8,6 +8,7 @@ import clientsRoutes from './modules/clients/clients.routes.js';
 import invoicesRoutes from './modules/invoices/invoices.routes.js';
 import expensesRoutes from './modules/expenses/expenses.routes.js';
 import dashboardRoutes from './modules/dashboard/dashboard.routes.js';
+import auditLogsRoutes from './modules/auditLogs/auditLogs.routes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -57,6 +58,7 @@ app.use('/api/clients', clientsRoutes);
 app.use('/api/invoices', invoicesRoutes);
 app.use('/api/expenses', expensesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/audit-logs', auditLogsRoutes);
 
 // Health Check Route
 app.get('/api/health', async (req, res, next) => {

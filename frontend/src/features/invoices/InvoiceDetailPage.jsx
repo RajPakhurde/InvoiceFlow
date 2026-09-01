@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Pencil, Trash2, Download, Send, AlertTriangle, X, MoreVertical, CheckCircle } from 'lucide-react';
 import { fetchInvoiceById, updateInvoiceStatus, deleteInvoice } from './invoicesSlice';
 import { downloadInvoicePdfApi, sendInvoiceEmailApi } from '../../api/invoicesApi';
+import { generateAndDownloadInvoicePdf } from '../../utils/generatePdf';
 
 export default function InvoiceDetailPage() {
   const { id } = useParams();
@@ -72,9 +73,14 @@ export default function InvoiceDetailPage() {
     setIsDownloadingPdf(true);
     setActionError(null);
     try {
-      await downloadInvoicePdfApi(invoice.id, invoice.invoiceNumber);
-    } catch (err) {
-      setActionError(err.response?.data?.error?.message || 'Failed to generate and download PDF');
+      generateAndDownloadInvoicePdf(invoice);
+    } catch (clientErr) {
+      console.warn('Client-side PDF generation fallback to API:', clientErr);
+      try {
+        await downloadInvoicePdfApi(invoice.id, invoice.invoiceNumber);
+      } catch (err) {
+        setActionError(err.response?.data?.error?.message || 'Failed to generate and download PDF');
+      }
     } finally {
       setIsDownloadingPdf(false);
     }
